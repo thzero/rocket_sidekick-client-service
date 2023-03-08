@@ -1,4 +1,4 @@
-import AppConstants from '@/constants';
+import AppConstants from '@/utility/constants';
 
 import MotorSearchExternalService from '@/service/external/motorSearch';
 

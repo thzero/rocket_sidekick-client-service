@@ -1,4 +1,4 @@
-import AppConstants from '@/constants';
+import AppConstants from '@/utility/constants';
 
 import AppUtility from '@/utility/app';
 import LibraryCommonUtility from '@thzero/library_common/utility/index';

@@ -1,4 +1,4 @@
-import AppConstants from '@/constants';
+import AppConstants from '@/utility/constants';
 
 import BaseService from '@thzero/library_client/service/index';
 

@@ -1,6 +1,6 @@
 import configureMeasurements, { length, speed } from 'convert-units';
 
-import AppConstants from '@/constants';
+import AppConstants from '@/utility/constants';
 
 import LibraryClientUtility from '@thzero/library_client/utility/index';
 import LibraryCommonUtility from '@thzero/library_common/utility';
