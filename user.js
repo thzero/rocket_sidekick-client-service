@@ -5,20 +5,6 @@ import AppUtility from '@/utility/app';
 import VueBaseUserService from '@thzero/library_client_vue3/service/baseUser';
 
 class UserService extends VueBaseUserService {
-	constructor() {
-		super();
-
-		this._serviceCommunicationRest = null;
-		this._serviceStore = null;
-	}
-
-	async init(injector) {
-		await super.init(injector);
-
-		this._serviceCommunicationRest = injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_COMMUNICATION_REST);
-		this._serviceStore = injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_STORE);
-	}
-
 	async fetchFavoritesByGamerId(correlationId, user) {
 		if (!user)
 			return this._error('UserService', 'fetchFavoritesByGamerId', 'Invalid user.', null, null, null, correlationId);
