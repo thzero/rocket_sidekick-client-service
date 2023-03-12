@@ -3,10 +3,6 @@ import AppConstants from '@/utility/constants';
 import ToolsService from '@/service/tools/index';
 
 class ParachuteSizingToolsService extends ToolsService {
-	constructor() {
-		super();
-	}
-
     init(injector) {
 		this._serviceCalculationEngine = injector.getService(AppConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
     }
