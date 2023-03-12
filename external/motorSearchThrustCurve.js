@@ -3,10 +3,6 @@ import AppConstants from '@/utility/constants';
 import MotorSearchExternalService from '@/service/external/motorSearch';
 
 class ThrustCurveMotorSearchExternalService extends MotorSearchExternalService {
-	constructor() {
-		super();
-	}
-
 	nameLocale() {
 		return 'menu.thrustcurve';
 	}
