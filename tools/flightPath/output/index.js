@@ -3,10 +3,6 @@ import NotImplementedError from '@thzero/library_common/errors/notImplemented';
 import BaseService from '@thzero/library_client/service/index';
 
 class FlightPathOutputService extends BaseService {
-	constructor() {
-		super();
-	}
-
 	initialize(correlationId) {
 		return this._success(correlationId);
 	}
