@@ -10,7 +10,8 @@ class AppUtilityService extends UtilityService {
 			const body = {
 				locale: LibraryClientUtility.$trans.locale
 			};
-			const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content' }, body);
+			// const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content' }, body);
+			const response = await this._contentCommunication(correlationId, body)
 			this._logger.debug('AppUtilityService', 'content', 'response', response, correlationId);
 			return response;
 		}
@@ -27,13 +28,26 @@ class AppUtilityService extends UtilityService {
 				locale: LibraryClientUtility.$trans.locale,
 				contentId: contentId
 			};
-			const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content/markup' }, body);
+			// const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content/markup' }, body);
+			const response = this._contentMarkupCommunication(correlationId, body);
 			this._logger.debug('AppUtilityService', 'contentMarkup', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
 			return this._error('AppUtilityService', 'contentMarkup', null, err, null, null, correlationId);
 		}
+	}
+
+	async _contentCommunication(correlationId, body) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content' }, body);
+		this._logger.debug('AppUtilityService', '_contentCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _contentMarkupCommunication(correlationId, contentId, body) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content/markup' }, body);
+		this._logger.debug('AppUtilityService', '_contentMarkupCommunication', 'response', response, correlationId);
+		return response;
 	}
 }
 
