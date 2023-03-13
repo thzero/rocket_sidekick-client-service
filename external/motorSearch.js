@@ -13,8 +13,8 @@ class MotorSearchExternalService extends BaseService {
 		this._ttlDefault = 7 * 24 * 60 * 60 * 1000;
 	}
 
-	init(injector) {
-		super.init(injector);
+	async init(injector) {
+		await super.init(injector);
 
 		this._serviceCommunicationRest = injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_COMMUNICATION_REST);
 	}
