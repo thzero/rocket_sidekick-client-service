@@ -5,6 +5,18 @@ import LibraryClientUtility from '@thzero/library_client/utility/index';
 import UtilityService from '@thzero/library_client/service/utility';
 
 class AppUtilityService extends UtilityService {
+	constructor() {
+		super();
+
+		this._serviceStore = null;
+	}
+
+	async init(injector) {
+		await super.init(injector);
+
+		this._serviceStore = injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_STORE);
+	}
+
 	async content(correlationId) {
 		try {
 			const body = {
@@ -36,6 +48,16 @@ class AppUtilityService extends UtilityService {
 		catch (err) {
 			return this._error('AppUtilityService', 'contentMarkup', null, err, null, null, correlationId);
 		}
+	}
+
+	async initialize(correlationId) {
+		const response = super.initialize(correlationId);
+
+		(async () => {
+			await this._serviceStore.dispatcher.requestManufacturers(correlationId);
+		})();
+
+		return response;
 	}
 
 	async _contentCommunication(correlationId, body) {
