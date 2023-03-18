@@ -1,4 +1,5 @@
-import AppConstants from '@/utility/constants';
+import AppCommonConstants from 'rocket_sidekick_common/constants';
+import AppSharedConstants from '@/utility/constants';
 
 import ToolsService from '@/service/tools/index';
 
@@ -6,7 +7,7 @@ class ParachuteSizingToolsService extends ToolsService {
     async init(injector) {
 		await super.init(injector);
 
-		this._serviceCalculationEngine = injector.getService(AppConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
+		this._serviceCalculationEngine = injector.getService(AppSharedConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
     }
 
 	initialize() {
@@ -25,19 +26,19 @@ class ParachuteSizingToolsService extends ToolsService {
 		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data, 'data', correlationId);
 		this._enforceNotEmpty('ParachuteSizingToolsService', 'initializeCalculation', outputMeasurementUnitsId, 'outputMeasurementUnitsId', correlationId);
 
-		const airDensityMeasurementUnit = this._measurementUnitFromId(correlationId, data.airDensityMeasurementUnitsId, AppConstants.MeasurementUnits.density.id, data.airDensityMeasurementUnitId);
+		const airDensityMeasurementUnit = this._measurementUnitFromId(correlationId, data.airDensityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.density.id, data.airDensityMeasurementUnitId);
 		let response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', airDensityMeasurementUnit, 'airDensityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
-		const desiredVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.desiredVelocityMeasurementUnitsId, AppConstants.MeasurementUnits.velocity.id, data.desiredVelocityMeasurementUnitId);
+		const desiredVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.desiredVelocityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.velocity.id, data.desiredVelocityMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', desiredVelocityMeasurementUnit, 'desiredVelocityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
-		const diameterLengthMeasurementUnit = this._measurementUnitFromId(correlationId, data.diameterLengthMeasurementUnitsId, AppConstants.MeasurementUnits.length.id, data.diameterLengthMeasurementUnitId);
+		const diameterLengthMeasurementUnit = this._measurementUnitFromId(correlationId, data.diameterLengthMeasurementUnitsId, AppCommonConstants.MeasurementUnits.length.id, data.diameterLengthMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', diameterLengthMeasurementUnit, 'diameterLengthMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
-		const massWeightMeasurementUnit = this._measurementUnitFromId(correlationId, data.massWeightMeasurementUnitsId, AppConstants.MeasurementUnits.weight.id, data.massWeightMeasurementUnitId);
+		const massWeightMeasurementUnit = this._measurementUnitFromId(correlationId, data.massWeightMeasurementUnitsId, AppCommonConstants.MeasurementUnits.weight.id, data.massWeightMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', massWeightMeasurementUnit, 'massWeightMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
@@ -54,7 +55,7 @@ class ParachuteSizingToolsService extends ToolsService {
 				value: data.airDensity,
 				units: {
 					from: airDensityMeasurementUnit,
-					to: AppConstants.MeasurementUnits.metrics.density.kgm3
+					to: AppCommonConstants.MeasurementUnits.metrics.density.kgm3
 				}
 			},
 			{
@@ -63,7 +64,7 @@ class ParachuteSizingToolsService extends ToolsService {
 				value: data.desiredVelocity,
 				units: {
 					from: desiredVelocityMeasurementUnit,
-					to: AppConstants.MeasurementUnits.metrics.velocity.ms
+					to: AppCommonConstants.MeasurementUnits.metrics.velocity.ms
 				}
 			},
 			{
@@ -72,7 +73,7 @@ class ParachuteSizingToolsService extends ToolsService {
 				value: data.mass,
 				units: {
 					from: massWeightMeasurementUnit,
-					to: AppConstants.MeasurementUnits.metrics.weight.kg
+					to: AppCommonConstants.MeasurementUnits.metrics.weight.kg
 				}
 			},
 			{

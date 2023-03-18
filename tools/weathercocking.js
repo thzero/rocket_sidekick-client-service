@@ -1,4 +1,5 @@
-import AppConstants from '@/utility/constants';
+import AppCommonConstants from 'rocket_sidekick_common/constants';
+import AppSharedConstants from '@/utility/constants';
 
 import ToolsService from '@/service/tools/index';
 
@@ -6,7 +7,7 @@ class WeathercockingToolsService extends ToolsService {
     async init(injector) {
 		await super.init(injector);
 
-		this._serviceCalculationEngine = injector.getService(AppConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
+		this._serviceCalculationEngine = injector.getService(AppSharedConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
     }
 
 	initialize() {
@@ -24,11 +25,11 @@ class WeathercockingToolsService extends ToolsService {
 		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data, 'data', correlationId);
 		this._enforceNotEmpty('WeathercockingToolsService', 'initializeCalculation', outputMeasurementUnitsId, 'outputMeasurementUnitsId', correlationId);
 
-		const exitVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.exitVelocityMeasurementUnitsId, AppConstants.MeasurementUnits.velocity.id, data.exitVelocityMeasurementUnitId);
+		const exitVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.exitVelocityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.velocity.id, data.exitVelocityMeasurementUnitId);
 		let response = this._enforceNotNullResponse('WeathercockingToolsService', 'initializeCalculation', exitVelocityMeasurementUnit, 'exitVelocityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
-		const windVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.windVelocityMeasurementUnitsId, AppConstants.MeasurementUnits.velocity.id, data.windVelocityMeasurementUnitId);
+		const windVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.windVelocityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.velocity.id, data.windVelocityMeasurementUnitId);
 		response = this._enforceNotNullResponse('WeathercockingToolsService', 'initializeCalculation', windVelocityMeasurementUnit, 'windVelocityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
@@ -40,7 +41,7 @@ class WeathercockingToolsService extends ToolsService {
 				value: data.exitVelocity,
 				units: {
 					from: exitVelocityMeasurementUnit,
-					to: AppConstants.MeasurementUnits.metrics.velocity.ms
+					to: AppCommonConstants.MeasurementUnits.metrics.velocity.ms
 				}
 			},
 			{
@@ -49,7 +50,7 @@ class WeathercockingToolsService extends ToolsService {
 				value: data.windVelocity,
 				units: {
 					from: windVelocityMeasurementUnit,
-					to: AppConstants.MeasurementUnits.metrics.velocity.ms
+					to: AppCommonConstants.MeasurementUnits.metrics.velocity.ms
 				}
 			},
 			{
