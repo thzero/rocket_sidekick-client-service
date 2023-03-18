@@ -1,4 +1,5 @@
-import AppConstants from '@/utility/constants';
+import AppCommonConstants from 'rocket_sidekick_common/constants';
+import AppSharedConstants from '@/utility/constants';
 
 import ToolsService from '@/service/tools/index';
 
@@ -6,7 +7,7 @@ class Thrust2WeightToolsService extends ToolsService {
     async init(injector) {
 		await super.init(injector);
 
-		this._serviceCalculationEngine = injector.getService(AppConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
+		this._serviceCalculationEngine = injector.getService(AppSharedConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
     }
 
 	initialize() {
@@ -29,7 +30,7 @@ class Thrust2WeightToolsService extends ToolsService {
 				type: this._serviceCalculationEngine.symTypeSet,
 				var: 'gravity',
 				value: 9.8,
-				unit: AppConstants.MeasurementUnits.metrics.acceleration.ms2
+				unit: AppCommonConstants.MeasurementUnits.metrics.acceleration.ms2
 			},
 			{
 				type: this._serviceCalculationEngine.symTypeSet,
@@ -37,7 +38,7 @@ class Thrust2WeightToolsService extends ToolsService {
 				value: data.mass,
 				units: {
 					from: data.units,
-					to: AppConstants.MeasurementUnits.metrics.weight.kg
+					to: AppCommonConstants.MeasurementUnits.metrics.weight.kg
 				}
 			},
 			{
