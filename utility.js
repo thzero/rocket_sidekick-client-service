@@ -50,16 +50,6 @@ class AppUtilityService extends UtilityService {
 		}
 	}
 
-	async initialize(correlationId) {
-		const response = super.initialize(correlationId);
-
-		(async () => {
-			await this._serviceStore.dispatcher.requestManufacturers(correlationId);
-		})();
-
-		return response;
-	}
-
 	async _contentCommunication(correlationId, body) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content' }, body);
 		this._logger.debug('AppUtilityService', '_contentCommunication', 'response', response, correlationId);
