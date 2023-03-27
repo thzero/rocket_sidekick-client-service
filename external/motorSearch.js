@@ -95,7 +95,7 @@ class MotorSearchExternalService extends BaseService {
 			const ttl = LibraryCommonUtility.getTimestamp() + this._ttlDefault;
 
 			if (cached && (cached.ttl !== null && cached.ttl > now) && (cached.data && cached.data.length > 0)) {
-				const responseFilter = this._searchFilter(correlationId, criteria, cached.data);
+				const responseFilter = this.searchFilter(correlationId, criteria, cached.data);
 				// If there total for this impulse class is greater than zero, use the cached results....
 				if (responseFilter.results.total > 0) {
 					return this._successResponse({
@@ -142,30 +142,7 @@ class MotorSearchExternalService extends BaseService {
 		}
 	}
 
-	urlHuman() {
-		const config = this._config.getBackend(this._urlKey());
-		return config.humanUrl;
-	}
-
-	urlMotor(motor) {
-		if (String.isNullOrEmpty(motor.manufacturerAbbrev) || String.isNullOrEmpty(motor.designation)) {
-			return null;
-		}
-
-		const uri = this.urlHuman() + '/motors/' + motor.manufacturerAbbrev + '/' + motor.designation;
-		return uri;
-	}
-
-	async _manufacturers(correlationId) {
-	}
-
-	async _motor(correlationId, motorId) {
-	}
-
-	async _search(correlationId, criteria) {
-	}
-
-	_searchFilter(correlationId, criteria, data) {
+	searchFilter(correlationId, criteria, data) {
 		let total = 0;
 		const output = [];
 
@@ -219,6 +196,29 @@ class MotorSearchExternalService extends BaseService {
 		}
 
 		return this._successResponse({ output: output, total: total }, correlationId);
+	}
+
+	urlHuman() {
+		const config = this._config.getBackend(this._urlKey());
+		return config.humanUrl;
+	}
+
+	urlMotor(motor) {
+		if (String.isNullOrEmpty(motor.manufacturerAbbrev) || String.isNullOrEmpty(motor.designation)) {
+			return null;
+		}
+
+		const uri = this.urlHuman() + '/motors/' + motor.manufacturerAbbrev + '/' + motor.designation;
+		return uri;
+	}
+
+	async _manufacturers(correlationId) {
+	}
+
+	async _motor(correlationId, motorId) {
+	}
+
+	async _search(correlationId, criteria) {
 	}
 
 	_searchUpdateData(correlationId, results, data, cached) {
