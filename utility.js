@@ -56,7 +56,7 @@ class AppUtilityService extends UtilityService {
 		return response;
 	}
 
-	async _contentMarkupCommunication(correlationId, contentId, body) {
+	async _contentMarkupCommunication(correlationId, body) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'utility/content/markup' }, body);
 		this._logger.debug('AppUtilityService', '_contentMarkupCommunication', 'response', response, correlationId);
 		return response;
