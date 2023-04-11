@@ -47,6 +47,28 @@ class ChecklistsService extends RestExternalService {
 		}
 	}
 
+	async saveShared(correlationId, checklist) {
+		try {
+			const response = await this._saveSharedCommunication(correlationId, checklist);
+			this._logger.debug('ChecklistsService', 'saveShared', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('ChecklistsService', 'saveShared', null, err, null, null, correlationId);
+		}
+	}
+
+	async saveUser(correlationId, checklist) {
+		try {
+			const response = await this._saveUserCommunication(correlationId, checklist);
+			this._logger.debug('ChecklistsService', 'saveUser', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('ChecklistsService', 'saveUser', null, err, null, null, correlationId);
+		}
+	}
+
 	async _listingSharedCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/listing/shared' }, params);
 		this._logger.debug('ChecklistsService', '_listingSharedCommunication', 'response', response, correlationId);
@@ -68,6 +90,18 @@ class ChecklistsService extends RestExternalService {
 	async _retrieveUserCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists/user', id);
 		this._logger.debug('ChecklistsService', '_retrieveUserCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _saveSharedCommunication(correlationId, checklist) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists' }, checklist);
+		this._logger.debug('ChecklistsService', '_saveSharedCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _saveUserCommunication(correlationId, checklist) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/user' }, checklist);
+		this._logger.debug('ChecklistsService', '_saveUserCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
