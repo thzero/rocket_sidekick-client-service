@@ -33,7 +33,7 @@ class ManufacturersService extends RestExternalService {
 
 	async _retrieveCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'manufacturers', id);
-		this._logger.debug('ManufacturersService', 'retrieve', 'response', response, correlationId);
+		this._logger.debug('ManufacturersService', '_retrieveCommunication', 'response', response, correlationId);
 		return response;
 	}
 }

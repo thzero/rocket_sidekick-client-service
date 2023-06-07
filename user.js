@@ -31,7 +31,7 @@ class UserService extends VueBaseUserService {
 		this._logger.debug('UserService', 'fetchByGamerTag', 'gamerTag', gamerTag, correlationId);
 		try {
 			// const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'users/gamerTag', gamerTag);
-			const response = await this._fetchByGamerTag(correlationId, gamerTag);
+			const response = await this._fetchByGamerTagCommunication(correlationId, gamerTag);
 			this._logger.debug('UserService', 'fetchByGamerTag', 'response', response, correlationId);
 			if (this._hasSucceeded(response))
 				return response;
@@ -53,9 +53,9 @@ class UserService extends VueBaseUserService {
 		return response;
 	}
 
-	async _fetchByGamerTag(correlationId, gamerTag) {
+	async _fetchByGamerTagCommunication(correlationId, gamerTag) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'users/gamerTag', gamerTag);
-		this._logger.debug('UserService', '_fetchByGamerTag', 'response', response, correlationId);
+		this._logger.debug('UserService', '_fetchByGamerTagCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
