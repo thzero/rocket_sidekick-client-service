@@ -127,7 +127,7 @@ class MotorSearchExternalService extends BaseService {
 			}
 
 			// Filter the data set for results...
-			const responseFilter = this._searchFilter(correlationId, criteria, data);
+			const responseFilter = this.searchFilter(correlationId, criteria, data);
 			return this._successResponse({
 				filtered: this._hasSucceeded(responseFilter) ? responseFilter.results.output : [],
 				data: {
