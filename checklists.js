@@ -3,6 +3,28 @@ import LibraryClientConstants from '@thzero/library_client/constants.js';
 import RestExternalService from '@thzero/library_client/service/externalRest';
 
 class ChecklistsService extends RestExternalService {
+	async copy(correlationId, params) {
+		try {
+			const response = await this._copyCommunication(correlationId, params);
+			this._logger.debug('ChecklistsService', 'copy', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('ChecklistsService', 'copy', null, err, null, null, correlationId);
+		}
+	}
+
+	async deleteUser(correlationId, id) {
+		try {
+			const response = await this._deleteUserCommunication(correlationId, id);
+			this._logger.debug('ChecklistsService', 'deleteUser', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('ChecklistsService', 'deleteUser', null, err, null, null, correlationId);
+		}
+	}
+
 	async listingShared(correlationId, params) {
 		try {
 			const response = await this._listingSharedCommunication(correlationId, params);
@@ -67,6 +89,18 @@ class ChecklistsService extends RestExternalService {
 		catch (err) {
 			return this._error('ChecklistsService', 'saveUser', null, err, null, null, correlationId);
 		}
+	}
+
+	async _copyCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/copy' }, params);
+		this._logger.debug('ChecklistsService', '_copyCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _deleteUserCommunication(correlationId, id) {
+		const response = await this._serviceCommunicationRest.deleteById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists/user', id);
+		this._logger.debug('ChecklistsService', '_deleteUserCommunication', 'response', response, correlationId);
+		return response;
 	}
 
 	async _listingSharedCommunication(correlationId, params) {
