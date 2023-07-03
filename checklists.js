@@ -14,80 +14,47 @@ class ChecklistsService extends RestExternalService {
 		}
 	}
 
-	async deleteUser(correlationId, id) {
+	async delete(correlationId, id) {
 		try {
-			const response = await this._deleteUserCommunication(correlationId, id);
-			this._logger.debug('ChecklistsService', 'deleteUser', 'response', response, correlationId);
+			const response = await this._deleteCommunication(correlationId, id);
+			this._logger.debug('ChecklistsService', 'delete', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
-			return this._error('ChecklistsService', 'deleteUser', null, err, null, null, correlationId);
+			return this._error('ChecklistsService', 'delete', null, err, null, null, correlationId);
 		}
 	}
 
-	async listingShared(correlationId, params) {
+	async listing(correlationId, params) {
 		try {
-			const response = await this._listingSharedCommunication(correlationId, params);
-			this._logger.debug('ChecklistsService', 'listingShared', 'response', response, correlationId);
+			const response = await this._listingCommunication(correlationId, params);
+			this._logger.debug('ChecklistsService', 'listing', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
-			return this._error('ChecklistsService', 'listingShared', null, err, null, null, correlationId);
+			return this._error('ChecklistsService', 'listing', null, err, null, null, correlationId);
 		}
 	}
 
-	async listingUser(correlationId, params) {
+	async retrieve(correlationId, id) {
 		try {
-			const response = await this._listingUserCommunication(correlationId, params);
-			this._logger.debug('ChecklistsService', 'listingUser', 'response', response, correlationId);
+			const response = await this._retrieveCommunication(correlationId, id);
+			this._logger.debug('ChecklistsService', 'retrieve', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
-			return this._error('ChecklistsService', 'listingUser', null, err, null, null, correlationId);
+			return this._error('ChecklistsService', 'retrieve', null, err, null, null, correlationId);
 		}
 	}
 
-	async retrieveShared(correlationId, id) {
+	async save(correlationId, checklist) {
 		try {
-			const response = await this._retrieveSharedCommunication(correlationId, id);
-			this._logger.debug('ChecklistsService', 'retrieveShared', 'response', response, correlationId);
+			const response = await this._saveCommunication(correlationId, checklist);
+			this._logger.debug('ChecklistsService', 'save', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
-			return this._error('ChecklistsService', 'retrieveShared', null, err, null, null, correlationId);
-		}
-	}
-
-	async retrieveUser(correlationId, id) {
-		try {
-			const response = await this._retrieveUserCommunication(correlationId, id);
-			this._logger.debug('ChecklistsService', 'retrieveUser', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('ChecklistsService', 'retrieveUser', null, err, null, null, correlationId);
-		}
-	}
-
-	async saveShared(correlationId, checklist) {
-		try {
-			const response = await this._saveSharedCommunication(correlationId, checklist);
-			this._logger.debug('ChecklistsService', 'saveShared', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('ChecklistsService', 'saveShared', null, err, null, null, correlationId);
-		}
-	}
-
-	async saveUser(correlationId, checklist) {
-		try {
-			const response = await this._saveUserCommunication(correlationId, checklist);
-			this._logger.debug('ChecklistsService', 'saveUser', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('ChecklistsService', 'saveUser', null, err, null, null, correlationId);
+			return this._error('ChecklistsService', 'save', null, err, null, null, correlationId);
 		}
 	}
 
@@ -97,45 +64,27 @@ class ChecklistsService extends RestExternalService {
 		return response;
 	}
 
-	async _deleteUserCommunication(correlationId, id) {
-		const response = await this._serviceCommunicationRest.deleteById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists/user', id);
-		this._logger.debug('ChecklistsService', '_deleteUserCommunication', 'response', response, correlationId);
+	async _deleteCommunication(correlationId, id) {
+		const response = await this._serviceCommunicationRest.deleteById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists', id);
+		this._logger.debug('ChecklistsService', '_deleteCommunication', 'response', response, correlationId);
 		return response;
 	}
 
-	async _listingSharedCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/listing/shared' }, params);
-		this._logger.debug('ChecklistsService', '_listingSharedCommunication', 'response', response, correlationId);
+	async _listingCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/listing' }, params);
+		this._logger.debug('ChecklistsService', '_listingCommunication', 'response', response, correlationId);
 		return response;
 	}
 
-	async _listingUserCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/listing/user' }, params);
-		this._logger.debug('ChecklistsService', '_listingUserCommunication', 'response', response, correlationId);
+	async _retrieveCommunication(correlationId, id) {
+		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists', id);
+		this._logger.debug('ChecklistsService', '_retrieveCommunication', 'response', response, correlationId);
 		return response;
 	}
 
-	async _retrieveSharedCommunication(correlationId, id) {
-		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists/shared', id);
-		this._logger.debug('ChecklistsService', '_retrieveSharedCommunication', 'response', response, correlationId);
-		return response;
-	}
-
-	async _retrieveUserCommunication(correlationId, id) {
-		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists/user', id);
-		this._logger.debug('ChecklistsService', '_retrieveUserCommunication', 'response', response, correlationId);
-		return response;
-	}
-
-	async _saveSharedCommunication(correlationId, checklist) {
+	async _saveCommunication(correlationId, checklist) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists' }, checklist);
-		this._logger.debug('ChecklistsService', '_saveSharedCommunication', 'response', response, correlationId);
-		return response;
-	}
-
-	async _saveUserCommunication(correlationId, checklist) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/user' }, checklist);
-		this._logger.debug('ChecklistsService', '_saveUserCommunication', 'response', response, correlationId);
+		this._logger.debug('ChecklistsService', '_saveCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
