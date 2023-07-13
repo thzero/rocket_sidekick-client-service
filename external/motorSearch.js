@@ -1,5 +1,7 @@
 import LibraryClientConstants from '@thzero/library_client/constants';
 
+import NotImplementedError from '@thzero/library_common/errors/notImplemented';
+
 import LibraryCommonUtility from '@thzero/library_common/utility/index';
 
 import BaseService from '@thzero/library_client/service/index';
@@ -157,12 +159,15 @@ class MotorSearchExternalService extends BaseService {
 	}
 
 	async _manufacturers(correlationId) {
+		throw new NotImplementedError();
 	}
 
 	async _motor(correlationId, motorId) {
+		throw new NotImplementedError();
 	}
 
 	async _search(correlationId, criteria) {
+		throw new NotImplementedError();
 	}
 
 	_searchFilter(correlationId, criteria, data) {
