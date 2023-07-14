@@ -25,14 +25,19 @@ class PartsService extends RestExternalService {
 		}
 	}
 
-	async listing(correlationId, params) {
+	async search(correlationId, params) {
 		try {
-			const response = await this._listingCommunication(correlationId, params);
-			this._logger.debug('PartsService', 'listing', 'response', response, correlationId);
+			this._enforceNotNull('PartsService', 'search', params, 'params', correlationId);
+			this._enforceNotEmpty('PartsService', 'search', params.typeId, 'params.typeId', correlationId);
+			
+			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
+
+			const response = await this._searchCommunication(correlationId, params);
+			this._logger.debug('PartsService', 'search', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
-			return this._error('PartsService', 'listing', null, err, null, null, correlationId);
+			return this._error('PartsService', 'search', null, err, null, null, correlationId);
 		}
 	}
 
@@ -70,9 +75,9 @@ class PartsService extends RestExternalService {
 		return response;
 	}
 
-	async _listingCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/listing' }, params);
-		this._logger.debug('PartsService', '_listingCommunication', 'response', response, correlationId);
+	async _searchCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search' }, params);
+		this._logger.debug('PartsService', '_searchCommunication', 'response', response, correlationId);
 		return response;
 	}
 
