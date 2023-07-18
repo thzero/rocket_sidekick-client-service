@@ -25,17 +25,6 @@ class ChecklistsService extends RestExternalService {
 		}
 	}
 
-	async listing(correlationId, params) {
-		try {
-			const response = await this._listingCommunication(correlationId, params);
-			this._logger.debug('ChecklistsService', 'listing', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('ChecklistsService', 'listing', null, err, null, null, correlationId);
-		}
-	}
-
 	async retrieve(correlationId, id) {
 		try {
 			const response = await this._retrieveCommunication(correlationId, id);
@@ -58,6 +47,17 @@ class ChecklistsService extends RestExternalService {
 		}
 	}
 
+	async search(correlationId, params) {
+		try {
+			const response = await this._searchCommunication(correlationId, params);
+			this._logger.debug('ChecklistsService', 'search', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('ChecklistsService', 'search', null, err, null, null, correlationId);
+		}
+	}
+
 	async _copyCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/copy' }, params);
 		this._logger.debug('ChecklistsService', '_copyCommunication', 'response', response, correlationId);
@@ -70,12 +70,6 @@ class ChecklistsService extends RestExternalService {
 		return response;
 	}
 
-	async _listingCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/listing' }, params);
-		this._logger.debug('ChecklistsService', '_listingCommunication', 'response', response, correlationId);
-		return response;
-	}
-
 	async _retrieveCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'checklists', id);
 		this._logger.debug('ChecklistsService', '_retrieveCommunication', 'response', response, correlationId);
@@ -85,6 +79,12 @@ class ChecklistsService extends RestExternalService {
 	async _saveCommunication(correlationId, checklist) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists' }, checklist);
 		this._logger.debug('ChecklistsService', '_saveCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _searchCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/search' }, params);
+		this._logger.debug('ChecklistsService', '_searchCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
