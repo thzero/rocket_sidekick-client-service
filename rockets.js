@@ -25,28 +25,6 @@ class RocketsService extends RestExternalService {
 		}
 	}
 
-	async listing(correlationId, params) {
-		try {
-			const response = await this._listingCommunication(correlationId, params);
-			this._logger.debug('RocketsService', 'listing', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('RocketsService', 'listing', null, err, null, null, correlationId);
-		}
-	}
-
-	async listingGallery(correlationId, params) {
-		try {
-			const response = await this._listingGalleryCommunication(correlationId, params);
-			this._logger.debug('RocketsService', 'listingGalleryr', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('RocketsService', 'listlistingGalleryringUser', null, err, null, null, correlationId);
-		}
-	}
-
 	async retrieve(correlationId, id) {
 		try {
 			const response = await this._retrieveCommunication(correlationId, id);
@@ -80,6 +58,28 @@ class RocketsService extends RestExternalService {
 		}
 	}
 
+	async search(correlationId, params) {
+		try {
+			const response = await this._searchCommunication(correlationId, params);
+			this._logger.debug('RocketsService', 'search', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketsService', 'search', null, err, null, null, correlationId);
+		}
+	}
+
+	async searchGallery(correlationId, params) {
+		try {
+			const response = await this._searchGalleryCommunication(correlationId, params);
+			this._logger.debug('RocketsService', 'searchGallery', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketsService', 'searchGallery', null, err, null, null, correlationId);
+		}
+	}
+
 	async _copyCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/copy' }, params);
 		this._logger.debug('RocketsService', '_copyCommunication', 'response', response, correlationId);
@@ -92,15 +92,15 @@ class RocketsService extends RestExternalService {
 		return response;
 	}
 
-	async _listingCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/listing' }, params);
-		this._logger.debug('RocketsService', '_listingCommunication', 'response', response, correlationId);
+	async _searchCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/search' }, params);
+		this._logger.debug('RocketsService', '_searchCommunication', 'response', response, correlationId);
 		return response;
 	}
 
-	async _listingGalleryCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/listing/gallery' }, params);
-		this._logger.debug('RocketsService', '_listingGalleryCommunication', 'response', response, correlationId);
+	async _searchGalleryCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/search/gallery' }, params);
+		this._logger.debug('RocketsService', '_searchGalleryCommunication', 'response', response, correlationId);
 		return response;
 	}
 
