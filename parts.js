@@ -25,22 +25,6 @@ class PartsService extends RestExternalService {
 		}
 	}
 
-	async search(correlationId, params) {
-		try {
-			this._enforceNotNull('PartsService', 'search', params, 'params', correlationId);
-			this._enforceNotEmpty('PartsService', 'search', params.typeId, 'params.typeId', correlationId);
-			
-			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
-
-			const response = await this._searchCommunication(correlationId, params);
-			this._logger.debug('PartsService', 'search', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('PartsService', 'search', null, err, null, null, correlationId);
-		}
-	}
-
 	async retrieve(correlationId, id) {
 		try {
 			const response = await this._retrieveCommunication(correlationId, id);
@@ -63,6 +47,37 @@ class PartsService extends RestExternalService {
 		}
 	}
 
+	async search(correlationId, params) {
+		try {
+			this._enforceNotNull('PartsService', 'search', params, 'params', correlationId);
+			this._enforceNotEmpty('PartsService', 'search', params.typeId, 'params.typeId', correlationId);
+			
+			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
+
+			const response = await this._searchCommunication(correlationId, params);
+			this._logger.debug('PartsService', 'search', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('PartsService', 'search', null, err, null, null, correlationId);
+		}
+	}
+
+	async searchRecovery(correlationId, params) {
+		try {
+			this._enforceNotNull('PartsService', 'searchRecovery', params, 'params', correlationId);
+			
+			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
+
+			const response = await this._searchRecoveryCommunication(correlationId, params);
+			this._logger.debug('PartsService', 'searchRecovery', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('PartsService', 'searchRecovery', null, err, null, null, correlationId);
+		}
+	}
+
 	async _copyCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/copy' }, params);
 		this._logger.debug('PartsService', '_copyCommunication', 'response', response, correlationId);
@@ -75,15 +90,21 @@ class PartsService extends RestExternalService {
 		return response;
 	}
 
+	async _retrieveCommunication(correlationId, id) {
+		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'parts', id);
+		this._logger.debug('PartsService', 'retrieve', 'response', response, correlationId);
+		return response;
+	}
+
 	async _searchCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search' }, params);
 		this._logger.debug('PartsService', '_searchCommunication', 'response', response, correlationId);
 		return response;
 	}
 
-	async _retrieveCommunication(correlationId, id) {
-		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'parts', id);
-		this._logger.debug('PartsService', 'retrieve', 'response', response, correlationId);
+	async _searchRecoveryCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search/recovery' }, params);
+		this._logger.debug('PartsService', '_searchRecoveryCommunication', 'response', response, correlationId);
 		return response;
 	}
 
