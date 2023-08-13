@@ -49,6 +49,14 @@ class RocketsService extends RestExternalService {
 
 	async save(correlationId, rocket) {
 		try {
+			const func = (item) => { return  { id: item.id, itemId: item.itemId, typeId: item.typeId }; };
+			if (rocket.altimeters)
+				rocket.altimeters = rocket.altimeters.map(item => func(item));
+			if (rocket.recovery)
+				rocket.recovery = rocket.recovery.map(item => func(item));
+			if (rocket.trackers)
+				rocket.trackers = rocket.trackers.map(item => func(item));
+
 			const response = await this._saveCommunication(correlationId, rocket);
 			this._logger.debug('RocketsService', 'save', 'response', response, correlationId);
 			return response;
