@@ -38,6 +38,8 @@ class RocketsService extends RestExternalService {
 
 	async retrieveGallery(correlationId, id) {
 		try {
+			this._enforceNotEmpty('RocketsService', 'search', id, 'id', correlationId);
+
 			const response = await this._retrieveGalleryCommunication(correlationId, id);
 			this._logger.debug('RocketsService', 'retrieveGallery', 'response', response, correlationId);
 			return response;
@@ -49,18 +51,24 @@ class RocketsService extends RestExternalService {
 
 	async save(correlationId, rocket) {
 		try {
-			const items = [ rocket ];
-			items.push(...rocket.stages);
+			this._enforceNotNull('RocketsService', 'search', rocket, 'rocket', correlationId);
 
-			const func = (item) => { return  { id: item.id, itemId: item.itemId, typeId: item.typeId }; };
+			if (rocket.stages) {
+				const func = (item) => { return  { id: item.id, itemId: item.itemId, typeId: item.typeId }; };
 
-			for (const item of items) {
-				if (item.altimeters)
-					item.altimeters = item.altimeters.map(i => func(i));
-				if (item.recovery)
-					item.recovery = item.recovery.map(i => func(i));
-				if (item.trackers)
-					item.trackers = item.trackers.map(i => func(i));	
+				let stage;
+				let stages = [];
+				for (let i = 0; i < rocket.stages.length; i++) {
+					stage = rocket.stages[i];
+					if (stage.altimeters)
+						stage.altimeters = stage.altimeters.map(l => func(l));
+					if (stage.recovery)
+						stage.recovery = stage.recovery.map(l => func(l));
+					if (stage.trackers)
+						stage.trackers = stage.trackers.map(l => func(l));
+					stages.push(stage);
+				}
+				rocket.stages = stages;
 			}
 
 			const response = await this._saveCommunication(correlationId, rocket);
