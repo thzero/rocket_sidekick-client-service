@@ -16,6 +16,8 @@ class RocketsService extends RestExternalService {
 
 	async delete(correlationId, id) {
 		try {
+			this._enforceNotEmpty('RocketsService', 'delete', id, 'id', correlationId);
+
 			const response = await this._deleteCommunication(correlationId, id);
 			this._logger.debug('RocketsService', 'delete', 'response', response, correlationId);
 			return response;
@@ -27,6 +29,8 @@ class RocketsService extends RestExternalService {
 
 	async retrieve(correlationId, id) {
 		try {
+			this._enforceNotEmpty('RocketsService', 'retrieve', id, 'id', correlationId);
+
 			const response = await this._retrieveCommunication(correlationId, id);
 			this._logger.debug('RocketsService', 'retrieve', 'response', response, correlationId);
 			return response;
@@ -38,7 +42,7 @@ class RocketsService extends RestExternalService {
 
 	async retrieveGallery(correlationId, id) {
 		try {
-			this._enforceNotEmpty('RocketsService', 'search', id, 'id', correlationId);
+			this._enforceNotEmpty('RocketsService', 'retrieveGallery', id, 'id', correlationId);
 
 			const response = await this._retrieveGalleryCommunication(correlationId, id);
 			this._logger.debug('RocketsService', 'retrieveGallery', 'response', response, correlationId);
@@ -51,7 +55,7 @@ class RocketsService extends RestExternalService {
 
 	async save(correlationId, rocket) {
 		try {
-			this._enforceNotNull('RocketsService', 'search', rocket, 'rocket', correlationId);
+			this._enforceNotNull('RocketsService', 'save', rocket, 'rocket', correlationId);
 
 			if (rocket.stages) {
 				const func = (item) => { return  { id: item.id, itemId: item.itemId, typeId: item.typeId }; };
@@ -114,18 +118,6 @@ class RocketsService extends RestExternalService {
 		return response;
 	}
 
-	async _searchCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/search' }, params);
-		this._logger.debug('RocketsService', '_searchCommunication', 'response', response, correlationId);
-		return response;
-	}
-
-	async _searchGalleryCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/search/gallery' }, params);
-		this._logger.debug('RocketsService', '_searchGalleryCommunication', 'response', response, correlationId);
-		return response;
-	}
-
 	async _retrieveCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'rockets', id);
 		this._logger.debug('RocketsService', '_retrieveCommunication', 'response', response, correlationId);
@@ -138,9 +130,15 @@ class RocketsService extends RestExternalService {
 		return response;
 	}
 
-	async _saveCommunication(correlationId, rocket) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets' }, rocket);
-		this._logger.debug('RocketsService', '_saveCommunication', 'response', response, correlationId);
+	async _searchCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/search' }, params);
+		this._logger.debug('RocketsService', '_searchCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _searchGalleryCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets/search/gallery' }, params);
+		this._logger.debug('RocketsService', '_searchGalleryCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
