@@ -66,8 +66,16 @@ class RocketsService extends RestExternalService {
 					stage = rocket.stages[i];
 					if (stage.altimeters)
 						stage.altimeters = stage.altimeters.map(l => func(l));
-					if (stage.recovery)
-						stage.recovery = stage.recovery.map(l => func(l));
+					if (stage.chuteProtectors)
+						stage.chuteProtectors = stage.chuteProtectors.map(l => func(l));
+					if (stage.chuteReleases)
+						stage.chuteReleases = stage.chuteReleases.map(l => func(l));
+					if (stage.deploymentBags)
+						stage.deploymentBags = stage.deploymentBags.map(l => func(l));
+					if (stage.parachutes)
+						stage.parachutes = stage.parachutes.map(l => func(l));
+					if (stage.streamers)
+						stage.streamers = stage.streamers.map(l => func(l));
 					if (stage.trackers)
 						stage.trackers = stage.trackers.map(l => func(l));
 					stages.push(stage);
@@ -127,6 +135,12 @@ class RocketsService extends RestExternalService {
 	async _retrieveGalleryCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'rockets/gallery', id);
 		this._logger.debug('RocketsService', '_retrieveGalleryCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _saveCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'rockets' }, params);
+		this._logger.debug('RocketsService', '_saveCommunication', 'response', response, correlationId);
 		return response;
 	}
 
