@@ -60,6 +60,7 @@ class RocketsService extends RestExternalService {
 			if (rocket.stages) {
 				const func = (item) => { return  { id: item.id, itemId: item.itemId, typeId: item.typeId }; };
 
+				// clean out display data from parts...
 				let stage;
 				let stages = [];
 				for (let i = 0; i < rocket.stages.length; i++) {

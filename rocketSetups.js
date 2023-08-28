@@ -40,17 +40,21 @@ class RocketSetupsService extends RestExternalService {
 		}
 	}
 
-	async save(correlationId, rocket) {
+	async save(correlationId, rocketSetup) {
 		try {
-			this._enforceNotNull('RocketSetupsService', 'save', rocket, 'rocket', correlationId);
+			this._enforceNotNull('RocketSetupsService', 'save', rocketSetup, 'rocketSetup', correlationId);
 
-			if (rocket.stages) {
+			// remove the rocket node that was added when selecting a rocket
+			delete rocketSetup.rocket;
+
+			if (rocketSetup.stages) {
 				const func = (item) => { return  { id: item.id, itemId: item.itemId, typeId: item.typeId }; };
 
+				// clean out display data from parts...
 				let stage;
 				let stages = [];
-				for (let i = 0; i < rocket.stages.length; i++) {
-					stage = rocket.stages[i];
+				for (let i = 0; i < rocketSetup.stages.length; i++) {
+					stage = rocketSetup.stages[i];
 					if (stage.altimeters)
 						stage.altimeters = stage.altimeters.map(l => func(l));
 					if (stage.recovery)
@@ -59,10 +63,10 @@ class RocketSetupsService extends RestExternalService {
 						stage.trackers = stage.trackers.map(l => func(l));
 					stages.push(stage);
 				}
-				rocket.stages = stages;
+				rocketSetup.stages = stages;
 			}
 
-			const response = await this._saveCommunication(correlationId, rocket);
+			const response = await this._saveCommunication(correlationId, rocketSetup);
 			this._logger.debug('RocketSetupsService', 'save', 'response', response, correlationId);
 			return response;
 		}
