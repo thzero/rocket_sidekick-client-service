@@ -1,8 +1,22 @@
+import AppCommonConstants from 'rocket_sidekick_common/constants';
+import AppUtilityConstants from '@/utility/constants';
 import LibraryClientConstants from '@thzero/library_client/constants.js';
 
 import RestExternalService from '@thzero/library_client/service/externalRest';
 
 class PartsService extends RestExternalService {
+	constructor() {
+		super();
+
+		this._serviceExternalMotorSearch = null;
+	}
+
+	async init(injector) {
+		await super.init(injector);
+
+		this._serviceExternalMotorSearch = this._injector.getService(AppUtilityConstants.InjectorKeys.SERVICE_EXTERNAL_MOTOR_SEARCH);
+	}
+
 	async copy(correlationId, params) {
 		try {
 			const response = await this._copyCommunication(correlationId, params);
@@ -36,7 +50,7 @@ class PartsService extends RestExternalService {
 		}
 	}
 
-	async save(correlationId, part) {
+	async save(correlationId, part, cache, cached) {
 		try {
 			const response = await this._saveCommunication(correlationId, part);
 			this._logger.debug('PartsService', 'save', 'response', response, correlationId);
@@ -50,7 +64,11 @@ class PartsService extends RestExternalService {
 	async search(correlationId, params) {
 		try {
 			this._enforceNotNull('PartsService', 'search', params, 'params', correlationId);
-			this._enforceNotEmpty('PartsService', 'search', params.typeId, 'params.typeId', correlationId);
+			this._enforceNotEmpty('PartsService', 'search', params.partTypes, 'params.partTypes', correlationId);
+
+			if (params.typeId === AppCommonConstants.Rocketry.PartTypes.motor) {
+				return this._serviceExternalMotorSearch.search()
+			}
 			
 			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
 
@@ -63,18 +81,33 @@ class PartsService extends RestExternalService {
 		}
 	}
 
-	async searchRecovery(correlationId, params) {
+	async searchMotors(correlationId, params) {
 		try {
-			this._enforceNotNull('PartsService', 'searchRecovery', params, 'params', correlationId);
-			
-			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
+			this._enforceNotNull('PartsService', 'search', params, 'params', correlationId);
 
-			const response = await this._searchRecoveryCommunication(correlationId, params);
-			this._logger.debug('PartsService', 'searchRecovery', 'response', response, correlationId);
+			params.typeId = AppCommonConstants.Rocketry.PartTypes.motor;
+
+			const response = await this._searchCommunication(correlationId, params);
+			this._logger.debug('PartsService', 'searcHMotors', 'response', response, correlationId);
 			return response;
 		}
 		catch (err) {
-			return this._error('PartsService', 'searchRecovery', null, err, null, null, correlationId);
+			return this._error('PartsService', 'searcHMotors', null, err, null, null, correlationId);
+		}
+	}
+
+	async searchRocket(correlationId, params) {
+		try {
+			this._enforceNotNull('PartsService', 'searchRocket', params, 'params', correlationId);
+			this._enforceNotEmpty('PartsService', 'search', params.partTypes, 'params.partTypes', correlationId);
+			
+			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
+			const response = await this._searchRocketCommunication(correlationId, params);
+			this._logger.debug('PartsService', 'searchRocket', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('PartsService', 'searchRocket', null, err, null, null, correlationId);
 		}
 	}
 
@@ -102,9 +135,9 @@ class PartsService extends RestExternalService {
 		return response;
 	}
 
-	async _searchRecoveryCommunication(correlationId, params) {
-		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search/recovery' }, params);
-		this._logger.debug('PartsService', '_searchRecoveryCommunication', 'response', response, correlationId);
+	async _searchRocketCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search/rocket' }, params);
+		this._logger.debug('PartsService', '_searchRocketCommunication', 'response', response, correlationId);
 		return response;
 	}
 
