@@ -34,7 +34,7 @@ class ThrustCurveMotorSearchExternalService extends MotorSearchExternalService {
 			maxResults: 200
 		};
 		const response = await this._serviceCommunicationRest.post(correlationId, this._urlKey(), { url: 'download.json' }, body, opts);
-		this._logger.debug('ThrustCurveMotorSearchExternalService', '_manufacturers', 'response', response, correlationId);
+		this._logger.debug('ThrustCurveMotorSearchExternalService', '_motor', 'response', response, correlationId);
 		if (response && response.results) {
 			let motor = null;
 			for (const item of response.results) {
@@ -61,14 +61,17 @@ class ThrustCurveMotorSearchExternalService extends MotorSearchExternalService {
 				availability: 'available',
 				maxResults: 500
 			};
-			if (!String.isNullOrEmpty(criteria.impulseClass)) {
+			if (!String.isNullOrEmpty(criteria.impulseClass))
 				body.impulseClass = criteria.impulseClass;
-			}
+
 			if (!String.isNullOrEmpty(criteria.motor)) {
 				body.commonName = criteria.motor;
+				// Search on common name...
 				let response = await this._serviceCommunicationRest.post(correlationId, this._urlKey(), { url: 'search.json' }, body, opts);
 				delete body.commonName;
 				if (!response || !response.results || (response.results && (response.results.length === 0))) {
+					body.commonName = criteria.motor;
+					// If nothing found, then search on designation...
 					body.designation = criteria.motor;
 					response = await this._serviceCommunicationRest.post(correlationId, this._urlKey(), { url: 'search.json' }, body, opts);
 					delete body.designation;
@@ -77,9 +80,12 @@ class ThrustCurveMotorSearchExternalService extends MotorSearchExternalService {
 				if (response && response.results && (response.results.length > 0))
 					body.impulseClass = response.results[0].impulseClass;
 			}
+
+			// Either from criteria or from motor need the impulse class...
 			if (String.isNullOrEmpty(body.impulseClass))
 				return this._error('ThrustCurveMotorSearchExternalService', 'search', 'Invalid criteira', null, null, null, correlationId);
 
+			// Search to get all the motors for this impulse class; then filtering will be applied upstream...
 			const response = await this._serviceCommunicationRest.post(correlationId, this._urlKey(), { url: 'search.json' }, body, opts);
 			this._logger.debug('ThrustCurveMotorSearchExternalService', '_search', 'response', response, correlationId);
 			return this._successResponse(response.results, correlationId);

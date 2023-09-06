@@ -25,10 +25,6 @@ class MotorSearchExternalService extends BaseService {
 		this.notImplementedError();
 	}
 
-	reset(correlationId) {
-		this._calculationData.reset();
-	}
-
 	async manufacturers(correlationId, cached) {
 		try {
 			const now = LibraryCommonUtility.getTimestamp();
@@ -123,7 +119,7 @@ class MotorSearchExternalService extends BaseService {
 
 			// If succeeded, then update data set.
 			if (this._hasSucceeded(response)) {
-				const responseUpdate = this._searchUpdateData(correlationId, response.results, data, cached.data);
+				const responseUpdate = this._searchUpdateCache(correlationId, response.results, data, cached.data);
 				if (this._successResponse(responseUpdate))
 					data = response.results;
 			}
@@ -226,7 +222,7 @@ class MotorSearchExternalService extends BaseService {
 		return this._successResponse({ output: output, total: total }, correlationId);
 	}
 
-	_searchUpdateData(correlationId, results, data, cached) {
+	_searchUpdateCache(correlationId, results, data, cached) {
 		let result;
 		let item;
 		if (!results) {
