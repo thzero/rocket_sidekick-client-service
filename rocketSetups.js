@@ -88,7 +88,7 @@ class RocketSetupsService extends RestExternalService {
 			// 	}
 			// 	rocketSetup.stages = stages;
 			// }
-			this._serviceRockets.stageClean(correlationId, rocketSetup.stages);
+			this._serviceRockets.stageClean(correlationId, rocketSetup);
 
 			const response = await this._saveCommunication(correlationId, rocketSetup);
 			this._logger.debug('RocketSetupsService', 'save', 'response', response, correlationId);
