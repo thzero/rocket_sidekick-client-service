@@ -83,7 +83,7 @@ class RocketsService extends RestExternalService {
 			// 	}
 			// 	rocket.stages = stages;
 			// }
-			this.stageClean(correlationId, rocket.stages);
+			this.stageClean(correlationId, rocket);
 
 			const response = await this._saveCommunication(correlationId, rocket);
 			this._logger.debug('RocketsService', 'save', 'response', response, correlationId);
@@ -125,8 +125,8 @@ class RocketsService extends RestExternalService {
 		// clean out display data from parts...
 		let stage;
 		let stages = [];
-		for (let i = 0; i < rocket.stages.length; i++) {
-			stage = rocket.stages[i];
+		for (let i = 0; i < object.stages.length; i++) {
+			stage = object.stages[i];
 			if (stage.altimeters)
 				stage.altimeters = stage.altimeters.map(l => func(l));
 			if (stage.chuteProtectors)
@@ -135,14 +135,15 @@ class RocketsService extends RestExternalService {
 				stage.chuteReleases = stage.chuteReleases.map(l => func(l));
 			if (stage.deploymentBags)
 				stage.deploymentBags = stage.deploymentBags.map(l => func(l));
-			if (stage.motors)
-				stage.motors = stage.motors.map(l => func(l));
+			// if (stage.motors)
+			// 	stage.motors = stage.motors.map(l => func(l));
 			if (stage.parachutes)
 				stage.parachutes = stage.parachutes.map(l => func(l));
 			if (stage.streamers)
 				stage.streamers = stage.streamers.map(l => func(l));
 			if (stage.trackers)
 				stage.trackers = stage.trackers.map(l => func(l));
+			delete stage.fromRocket;
 			stages.push(stage);
 		}
 		object.stages = stages;
