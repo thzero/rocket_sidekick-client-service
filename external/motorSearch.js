@@ -92,6 +92,16 @@ class MotorSearchExternalService extends BaseService {
 			const now = LibraryCommonUtility.getTimestamp();
 			const ttl = LibraryCommonUtility.getTimestamp() + this._ttlDefault;
 
+			if (!String.isNullOrEmpty(criteria.motorDiameter)) {
+				criteria.diameter = criteria.motorDiameter;
+				delete criteria.motorDiameter;
+			}
+			if (!String.isNullOrEmpty(criteria.motorImpulseClass)) {
+				criteria.impulseClass = criteria.motorImpulseClass;
+				delete criteria.motorImpulseClass;
+			}
+			criteria.impulseClass = criteria.impulseClass ?? null;
+
 			if (cached && (cached.ttl !== null && cached.ttl > now) && (cached.data && cached.data.length > 0)) {
 				const responseFilter = this._searchFilter(correlationId, criteria, cached.data);
 				// If there total for this impulse class is greater than zero, use the cached results....
@@ -116,6 +126,8 @@ class MotorSearchExternalService extends BaseService {
 
 			const response = await this._search(correlationId, criteria);
 			this._logger.debug('MotorSearchExternalService', 'search', 'response', response, correlationId);
+			if (this._hasFailed(response))
+				return response;
 
 			// If succeeded, then update data set.
 			if (this._hasSucceeded(response)) {
@@ -170,9 +182,8 @@ class MotorSearchExternalService extends BaseService {
 		let total = 0;
 		const output = [];
 
-		if (!data || !Array.isArray(data)) {
+		if (!data || !Array.isArray(data))
 			return this._successResponse({ output: [], total: 0 }, correlationId);
-		}
 
 		for (const item of data) {
 			if (!String.isNullOrEmpty(criteria.motor)) {
@@ -186,15 +197,13 @@ class MotorSearchExternalService extends BaseService {
 				continue;
 			}
 
-			if (!String.isNullOrEmpty(criteria.impulseClass) && (item.impulseClass.toLowerCase() !== criteria.impulseClass.toLowerCase()))
+			if (String.isNullOrEmpty(criteria.impulseClass))
+				continue;
+
+			if (item.impulseClass.toLowerCase() !== criteria.impulseClass.toLowerCase())
 				continue;
 
 			total++;
-
-			if (criteria.diameter) {
-				if (item.diameter !== parseInt(criteria.diameter))
-					continue;
-			}
 
 			if (criteria.diameter) {
 				if (item.diameter !== parseInt(criteria.diameter))
@@ -216,9 +225,15 @@ class MotorSearchExternalService extends BaseService {
 					continue;
 			}
 
+			if (!String.isNullOrEmpty(criteria.manufacturerStockId)) {
+				if (item.manufacturerStockId.toLowerCase().equals((criteria.manufacturerStockId ?? '').toLowerCase()))
+					continue;
+			}
+
 			output.push(item);
 		}
 
+		total = output.length;
 		return this._successResponse({ output: output, total: total }, correlationId);
 	}
 

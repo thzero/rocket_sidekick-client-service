@@ -28,6 +28,8 @@ class PartsSearchExternalService extends MotorSearchExternalService {
 	async _search(correlationId, criteria) {
 		try {
 			const params = {};
+			if (!String.isNullOrEmpty(criteria.diameter))
+				params.diameter = criteria.diameter;
 			if (!String.isNullOrEmpty(criteria.impulseClass))
 				params.impulseClass = criteria.impulseClass;
 
@@ -45,6 +47,8 @@ class PartsSearchExternalService extends MotorSearchExternalService {
 			// Either from criteria or from motor need the impulse class...
 			if (String.isNullOrEmpty(params.impulseClass))
 				return this._error('PartsSearchExternalService', 'search', 'Invalid criteira', null, null, null, correlationId);
+
+			params.motorSearch = true;
 
 			// Search to get all the motors for this impulse class; then filtering will be applied upstream...
 			const response = await this._serviceParts.searchMotors(correlationId, params);
