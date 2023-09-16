@@ -64,7 +64,7 @@ class PartsService extends RestExternalService {
 	async search(correlationId, params) {
 		try {
 			this._enforceNotNull('PartsService', 'search', params, 'params', correlationId);
-			this._enforceNotEmpty('PartsService', 'search', params.partTypes, 'params.partTypes', correlationId);
+			this._enforceNotEmpty('PartsService', 'search', params.typeId, 'params.typeId', correlationId);
 
 			if (params.typeId === AppCommonConstants.Rocketry.PartTypes.motor) {
 				return this._serviceExternalMotorSearch.search()
