@@ -75,7 +75,7 @@ class MotorSearchExternalService extends BaseService {
 				motor.samples = motor.samples ?? [];
 				if (response.results && response.results.data && (response.results.data.length > 0)) {
 					// motor.samples = response.results.samples;
-					const motorData = response.results.data.find(l => l.format === 'RASP');
+					let motorData = response.results.data.find(l => l.format === 'RASP');
 					if (!motorData)
 						motorData = response.results.data[0];
 					motor.samples = motorData ? motorData.samples : [];
