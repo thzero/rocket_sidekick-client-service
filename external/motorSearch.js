@@ -66,13 +66,20 @@ class MotorSearchExternalService extends BaseService {
 			if (!motor)
 				return this._error('MotorSearchExternalService', 'motor', 'Invalid motor', null, null, null, correlationId);
 
-			if (!motor.samples) {
+			if (!motor.samples || motor.samples.length === 0) {
 				const response = await this._motor(correlationId, motorId);
 				this._logger.debug('MotorSearchExternalService', 'motor', 'response', response, correlationId);
 				if (this._hasFailed(response))
 					return response;
 
-				motor.samples = response.results.samples;
+				motor.samples = motor.samples ?? [];
+				if (response.results && response.results.data && (response.results.data.length > 0)) {
+					// motor.samples = response.results.samples;
+					const motorData = response.results.data.find(l => l.format === 'RASP');
+					if (!motorData)
+						motorData = response.results.data[0];
+					motor.samples = motorData ? motorData.samples : [];
+				}
 			}
 
 			cache.last = LibraryCommonUtility.getTimestamp();
