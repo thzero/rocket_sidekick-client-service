@@ -8,12 +8,14 @@ class PartsService extends RestExternalService {
 	constructor() {
 		super();
 
+		this._servicStore = null;
 		this._serviceExternalMotorSearch = null;
 	}
 
 	async init(injector) {
 		await super.init(injector);
 
+		this._servicStore = this._injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_STORE);
 		this._serviceExternalMotorSearch = this._injector.getService(AppUtilityConstants.InjectorKeys.SERVICE_EXTERNAL_MOTOR_SEARCH);
 	}
 
@@ -50,6 +52,17 @@ class PartsService extends RestExternalService {
 		}
 	}
 
+	async retrieveMotor(correlationId, id) {
+		try {
+			const response = await this._retrieveMotorCommunication(correlationId, id);
+			this._logger.debug('PartsService', 'retrieveMotor', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('PartsService', 'retrieveMotor', null, err, null, null, correlationId);
+		}
+	}
+
 	async save(correlationId, part, cache, cached) {
 		try {
 			const response = await this._saveCommunication(correlationId, part);
@@ -67,7 +80,9 @@ class PartsService extends RestExternalService {
 			this._enforceNotEmpty('PartsService', 'search', params.typeId, 'params.typeId', correlationId);
 
 			if (params.typeId === AppCommonConstants.Rocketry.PartTypes.motor) {
-				return this._serviceExternalMotorSearch.search()
+				// console.log('parts.search.response');
+				// console.dir(response);
+				return this._serviceExternalMotorSearch.search();
 			}
 			
 			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.
@@ -87,7 +102,9 @@ class PartsService extends RestExternalService {
 
 			params.typeId = AppCommonConstants.Rocketry.PartTypes.motor;
 
-			const response = await this._searchCommunication(correlationId, params);
+			const response = await this._searchMotorCommunication(correlationId, params);
+			// console.log('parts.searchMotors.response');
+			// console.dir(response);
 			this._logger.debug('PartsService', 'searcHMotors', 'response', response, correlationId);
 			return response;
 		}
@@ -125,13 +142,35 @@ class PartsService extends RestExternalService {
 
 	async _retrieveCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'parts', id);
-		this._logger.debug('PartsService', 'retrieve', 'response', response, correlationId);
+		this._logger.debug('PartsService', '_retrieveCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _retrieveMotorCommunication(correlationId, id) {
+		let response = null;
+		const isLoggedIn = this._servicStore.userAuthIsLoggedIn;
+		if (isLoggedIn)
+			response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'parts', id);
+		else
+			response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'motors', id);
+		this._logger.debug('PartsService', '_retrieveMotorCommunication', 'response', response, correlationId);
 		return response;
 	}
 
 	async _searchCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search' }, params);
 		this._logger.debug('PartsService', '_searchCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _searchMotorCommunication(correlationId, params) {
+		let response = null;
+		const isLoggedIn = this._servicStore.userAuthIsLoggedIn;
+		if (isLoggedIn)
+			response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search' }, params);
+		else
+			response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'motors/search' }, params);
+		this._logger.debug('PartsService', '_searchMotorCommunication', 'response', response, correlationId);
 		return response;
 	}
 
