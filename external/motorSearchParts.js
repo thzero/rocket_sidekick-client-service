@@ -20,7 +20,7 @@ class PartsSearchExternalService extends MotorSearchExternalService {
 	}
 
 	async _motor(correlationId, motorId) {
-		const response = await this._serviceParts.retrieve(correlationId, motorId);
+		const response = await this._serviceParts.retrieveMotor(correlationId, motorId);
 		this._logger.debug('PartsSearchExternalService', '_motor', 'response', response, correlationId);
 		return response;
 	}
