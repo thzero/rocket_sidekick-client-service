@@ -6,7 +6,7 @@ import ToolsService from '@/service/tools/index';
 class WeathercockingToolsService extends ToolsService {
     async init(injector) {
 		await super.init(injector);
-
+1
 		this._serviceCalculationEngine = injector.getService(AppSharedConstants.InjectorKeys.SERVICE_TOOLS_CALCULATION_ENGINE);
     }
 
@@ -23,6 +23,11 @@ class WeathercockingToolsService extends ToolsService {
 
 	async initializeCalculation(correlationId, data, outputMeasurementUnitsId) {
 		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data, 'data', correlationId);
+		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data.exitVelocity, 'data.exitVelocity', correlationId);
+		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data.exitVelocityMeasurementUnitId , 'data.exitVelocityMeasurementUnitId ', correlationId);
+		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data.windVelocity, 'data.windVelocity', correlationId);
+		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data.windVelocityMeasurementUnitId, 'data.windVelocityMeasurementUnitId', correlationId);
+		this._enforceNotNull('WeathercockingToolsService', 'initializeCalculation', data.windVelocityMeasurementUnitsId, 'dadata.windVelocityMeasurementUnitsIdta', correlationId);
 		this._enforceNotEmpty('WeathercockingToolsService', 'initializeCalculation', outputMeasurementUnitsId, 'outputMeasurementUnitsId', correlationId);
 
 		const exitVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.exitVelocityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.velocity.id, data.exitVelocityMeasurementUnitId);

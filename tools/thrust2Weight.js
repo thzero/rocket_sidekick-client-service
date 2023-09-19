@@ -23,7 +23,14 @@ class Thrust2WeightToolsService extends ToolsService {
 
 	async initializeCalculation(correlationId, data, outputMeasurementUnitsId) {
 		this._enforceNotNull('Thrust2WeightToolsService', 'initializeCalculation', data, 'data', correlationId);
+		this._enforceNotNull('Thrust2WeightToolsService', 'initializeCalculation', data.thrustInitial, 'data.thrustInitial', correlationId);
+		this._enforceNotNull('Thrust2WeightToolsService', 'initializeCalculation', data.mass, 'data.mass', correlationId);
+		this._enforceNotNull('Thrust2WeightToolsService', 'initializeCalculation', data.unitId, 'data.unitId', correlationId);
+		this._enforceNotNull('Thrust2WeightToolsService', 'initializeCalculation', data.maxLaunchRodTime, 'data.maxLaunchRodTime', correlationId);
 		this._enforceNotEmpty('Thrust2WeightToolsService', 'initializeCalculation', outputMeasurementUnitsId, 'outputMeasurementUnitsId', correlationId);
+
+		data.thrustAverage = data.thrustAverage ?? null;
+		data.thrustPeak = data.thrustPeak ?? null;
 
 		const calculationSteps = [
 			{

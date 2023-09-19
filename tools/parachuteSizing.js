@@ -3,6 +3,12 @@ import AppSharedConstants from '@/utility/constants';
 
 import ToolsService from '@/service/tools/index';
 
+// https://www.apogeerockets.com/education/downloads/Newsletter449.pdf
+// http://www.rocketmime.com/rockets/descent.html
+// Spillhole
+// TODO: maybe drop down for different altitudes with free form override?
+// Different shapes for area?
+// Dropdown for parts that allows picking an existing chute that has a recorded Cd?
 class ParachuteSizingToolsService extends ToolsService {
     async init(injector) {
 		await super.init(injector);
@@ -24,6 +30,18 @@ class ParachuteSizingToolsService extends ToolsService {
 
 	async initializeCalculation(correlationId, data, outputMeasurementUnitsId) {
 		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data, 'data', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.airDensity, 'data.airDensity', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.airDensityMeasurementUnitId, 'data.airDensityMeasurementUnitId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.airDensityMeasurementUnitsId, 'data.airDensityMeasurementUnitsId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.coeffDrag, 'data.coeffDrag', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.desiredVelocity, 'data.desiredVelocity', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.desiredVelocityMeasurementUnitId, 'data.desiredVelocityMeasurementUnitId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.desiredVelocityMeasurementUnitsId, 'data.desiredVelocityMeasurementUnitsId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.diameterLengthMeasurementUnitId, 'data.diameterLengthMeasurementUnitId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.diameterLengthMeasurementUnitsId, 'data.diameterLengthMeasurementUnitsId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.mass, 'data.mass', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.massWeightMeasurementUnitId, 'data.massWeightMeasurementUnitId', correlationId);
+		this._enforceNotNull('ParachuteSizingToolsService', 'initializeCalculation', data.massWeightMeasurementUnitsId, 'data.massWeightMeasurementUnitsId', correlationId);
 		this._enforceNotEmpty('ParachuteSizingToolsService', 'initializeCalculation', outputMeasurementUnitsId, 'outputMeasurementUnitsId', correlationId);
 
 		const airDensityMeasurementUnit = this._measurementUnitFromId(correlationId, data.airDensityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.density.id, data.airDensityMeasurementUnitId);
