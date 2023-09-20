@@ -109,12 +109,12 @@ class MotorSearchExternalService extends BaseService {
 			}
 			criteria.impulseClass = criteria.impulseClass ?? null;
 
-			console.log('MotorSearchExternalService.search.cached');
-			console.dir(cached);
+			// console.log('MotorSearchExternalService.search.cached');
+			// console.dir(cached);
 			if (cached && (cached.ttl !== null && cached.ttl > now) && (cached.data && cached.data.length > 0)) {
 				const responseFilter = this._searchFilter(correlationId, criteria, cached.data);
-				console.log('MotorSearchExternalService.search.responseFilter');
-				console.dir(responseFilter);
+				// console.log('MotorSearchExternalService.search.responseFilter');
+				// console.dir(responseFilter);
 				// If there total for this impulse class is greater than zero, use the cached results....
 				if (responseFilter.results.total > 0) {
 					return this._successResponse({
@@ -136,29 +136,29 @@ class MotorSearchExternalService extends BaseService {
 			let data = [ ...cached.data ];
 
 			const response = await this._search(correlationId, criteria);
-			console.log('MotorSearchExternalService.search.response');
-			console.dir(response);
+			// console.log('MotorSearchExternalService.search.response');
+			// console.dir(response);
 			this._logger.debug('MotorSearchExternalService', 'search', 'response', response, correlationId);
 			if (this._hasFailed(response)) {
-				console.log('MotorSearchExternalService.search failed');
+				// console.log('MotorSearchExternalService.search failed');
 				return response;
 			}
 
 			// If succeeded, then update data set.
 			if (this._hasSucceeded(response)) {
 				const responseUpdate = this._searchUpdateCache(correlationId, response.results, data, cached.data);
-				console.log('MotorSearchExternalService.search.responseUpdate');
-				console.dir(responseUpdate);
+				// console.log('MotorSearchExternalService.search.responseUpdate');
+				// console.dir(responseUpdate);
 				if (this._successResponse(responseUpdate))
 					data = response.results;
 			}
 
-			console.log('MotorSearchExternalService.search.data');
-			console.dir(data);
+			// console.log('MotorSearchExternalService.search.data');
+			// console.dir(data);
 			// Filter the data set for results...
 			const responseFilter = this._searchFilter(correlationId, criteria, data);
-			console.log('MotorSearchExternalService.search.responseFilter');
-			console.dir(responseFilter);
+			// console.log('MotorSearchExternalService.search.responseFilter');
+			// console.dir(responseFilter);
 			return this._successResponse({
 				filtered: this._hasSucceeded(responseFilter) ? responseFilter.results.output : [],
 				data: {
@@ -203,110 +203,110 @@ class MotorSearchExternalService extends BaseService {
 		let total = 0;
 		const output = [];
 
-		console.log('MotorSearchExternalService._searchFilter.criteria');
-		console.dir(criteria);
+		// console.log('MotorSearchExternalService._searchFilter.criteria');
+		// console.dir(criteria);
 
 		if (!data || !Array.isArray(data)) {
-			console.log('MotorSearchExternalService._searchFilter.no data');
+			// console.log('MotorSearchExternalService._searchFilter.no data');
 			return this._successResponse({ output: [], total: 0 }, correlationId);
 		}
 
 		for (const item of data) {
-			console.log('MotorSearchExternalService._searchFilter.id');
-			console.dir(item.id);
+			// console.log('MotorSearchExternalService._searchFilter.id');
+			// console.dir(item.id);
 
-			console.log('MotorSearchExternalService._searchFilter.impulseClass');
-			console.dir(criteria.motor);
+			// console.log('MotorSearchExternalService._searchFilter.impulseClass');
+			// console.dir(criteria.motor);
 			if (!String.isNullOrEmpty(criteria.motor)) {
-				console.dir(item.commonName);
-				console.dir(item.motor);
+				// console.dir(item.commonName);
+				// console.dir(item.motor);
 				if (String.isNullOrEmpty(item.commonName) || item.commonName.toLowerCase().indexOf(criteria.motor.toLowerCase()) < 0) {
-					console.dir(item.designation);
+					// console.dir(item.designation);
 					if (String.isNullOrEmpty(item.designation) || item.designation.toLowerCase().indexOf(criteria.motor.toLowerCase()) < 0) {
-						console.log('MotorSearchExternalService._searchFilter.fail');
+						// console.log('MotorSearchExternalService._searchFilter.fail');
 						continue;
 					}
 				}
 
 				total++;
-				console.log('MotorSearchExternalService._searchFilter.id.add.motor');
+				// console.log('MotorSearchExternalService._searchFilter.id.add.motor');
 				output.push(item);
 				continue;
 			}
 
 			if (String.isNullOrEmpty(criteria.impulseClass)) {
-				console.log('MotorSearchExternalService._searchFilter.no impulseclass');
-				console.dir(criteria);
+				// console.log('MotorSearchExternalService._searchFilter.no impulseclass');
+				// console.dir(criteria);
 				continue;
 			}
 
-			console.log('MotorSearchExternalService._searchFilter.impulseClass');
-			console.dir(criteria.impulseClass.toLowerCase());
-			console.dir(item.impulseClass.toLowerCase());
+			// console.log('MotorSearchExternalService._searchFilter.impulseClass');
+			// console.dir(criteria.impulseClass.toLowerCase());
+			// console.dir(item.impulseClass.toLowerCase());
 			if (item.impulseClass.toLowerCase() !== criteria.impulseClass.toLowerCase()) {
-				console.log('MotorSearchExternalService._searchFilter.fail');
+				// console.log('MotorSearchExternalService._searchFilter.fail');
 				continue;
 			}
 
 			total++;
 
-			console.log('MotorSearchExternalService._searchFilter.diameter');
-			console.dir(criteria.diameter);
+			// console.log('MotorSearchExternalService._searchFilter.diameter');
+			// console.dir(criteria.diameter);
 			if (criteria.diameter) {
-				console.dir(item.diameter);
+				// console.dir(item.diameter);
 				if (item.diameter !== parseInt(criteria.diameter)) {
-					console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorSearchExternalService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			console.log('MotorSearchExternalService._searchFilter.sparky');
-			console.dir(criteria.sparky);
+			// console.log('MotorSearchExternalService._searchFilter.sparky');
+			// console.dir(criteria.sparky);
 			if (criteria.sparky !== null && criteria.sparky) {
-				console.dir(item.sparky);
+				// console.dir(item.sparky);
 				if (item.sparky === null || (item.sparky !== null && item.sparky === false)) {
-					console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorSearchExternalService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			console.log('MotorSearchExternalService._searchFilter.singleUse');
-			console.dir(criteria.singleUse);
+			// console.log('MotorSearchExternalService._searchFilter.singleUse');
+			// console.dir(criteria.singleUse);
 			if (criteria.singleUse !== null && criteria.singleUse) {
-				console.dir(item.type);
+				// console.dir(item.type);
 				if (item.type !== 'SU') {
-					console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorSearchExternalService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			console.log('MotorSearchExternalService._searchFilter.manufacturer');
-			console.dir(criteria.manufacturer);
+			// console.log('MotorSearchExternalService._searchFilter.manufacturer');
+			// console.dir(criteria.manufacturer);
 			if (Array.isArray(criteria.manufacturers) && criteria.manufacturers.length > 0) {
-				console.dir(item.manufacturerId);
+				// console.dir(item.manufacturerId);
 				if (!criteria.manufacturers.includes(item.manufacturerId)) {
-					console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorSearchExternalService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			console.log('MotorSearchExternalService._searchFilter.manufacturerStockId');
-			console.dir(criteria.manufacturerStockId);
+			// console.log('MotorSearchExternalService._searchFilter.manufacturerStockId');
+			// console.dir(criteria.manufacturerStockId);
 			if (!String.isNullOrEmpty(criteria.manufacturerStockId)) {
-				console.dir(item.manufacturerStockId);
+				// console.dir(item.manufacturerStockId);
 				if (item.manufacturerStockId.toLowerCase().equals((criteria.manufacturerStockId ?? '').toLowerCase())) {
-					console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorSearchExternalService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			console.log('MotorSearchExternalService._searchFilter.id.add');
-			console.dir(item.id);
+			// console.log('MotorSearchExternalService._searchFilter.id.add');
+			// console.dir(item.id);
 			output.push(item);
 		}
 
-		console.log('MotorSearchExternalService._searchFilter.output');
-		console.dir(output);
+		// console.log('MotorSearchExternalService._searchFilter.output');
+		// console.dir(output);
 		total = output.length;
 		return this._successResponse({ output: output, total: total }, correlationId);
 	}
