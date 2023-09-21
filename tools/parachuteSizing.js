@@ -47,18 +47,22 @@ class ParachuteSizingToolsService extends ToolsService {
 		let response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', airDensityMeasurementUnit, 'airDensityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
+		data.airDensityMeasurementUnit = airDensityMeasurementUnit;
 		const desiredVelocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.desiredVelocityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.velocity.id, data.desiredVelocityMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', desiredVelocityMeasurementUnit, 'desiredVelocityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
+		data.desiredVelocityMeasurementUnit = desiredVelocityMeasurementUnit;
 		const diameterLengthMeasurementUnit = this._measurementUnitFromId(correlationId, data.diameterLengthMeasurementUnitsId, AppCommonConstants.MeasurementUnits.length.id, data.diameterLengthMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', diameterLengthMeasurementUnit, 'diameterLengthMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
+		data.diameterLengthMeasurementUnit = diameterLengthMeasurementUnit;
 		const massWeightMeasurementUnit = this._measurementUnitFromId(correlationId, data.massWeightMeasurementUnitsId, AppCommonConstants.MeasurementUnits.weight.id, data.massWeightMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', massWeightMeasurementUnit, 'massWeightMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
 			return response;
+		data.massWeightMeasurementUnit = massWeightMeasurementUnit;
 
 		const calculationSteps = [
 			{
@@ -104,142 +108,154 @@ class ParachuteSizingToolsService extends ToolsService {
 			}
 		];
 
-		if (data.calculationType === 'diameter') {
-			calculationSteps.push({
-					type: this._serviceCalculationEngine.symTypeEvaluate,
-					var: 'denominator',
-					evaluate: 'airDensity * coeffDrag * desiredVelocity^2'
-			});
-			calculationSteps.push({
-				type: this._serviceCalculationEngine.symTypeEvaluate,
-				var: 'nominator',
-				evaluate: '(2 * mass * 9.8 m/s^2)'
-			});
-			calculationSteps.push({
-				type: this._serviceCalculationEngine.symTypeEvaluate,
-				var: 'areaTemp',
-				evaluate: 'nominator / denominator'
-			});
+		if (data.calculationType === AppSharedConstants.Tools.ParachuteSizing.calculationTypes.diameter)
+			this._initializeCalculationDiameter(correlationId, calculationSteps, data);
+		else if (data.calculationType === AppSharedConstants.Tools.ParachuteSizing.calculationTypes.velocity)
+			this._initializeCalculationVelocity(correlationId, calculationSteps, data);
+		else 
+			throw Error(`Invalid calculation type '${data.calculationType}'.`);
 
-			if (data.spillHolePct) {
-				calculationSteps.push({
-						type: this._serviceCalculationEngine.symTypeSet,
-						var: 'spillHolePct',
-						value: data.spillHolePct / 100
-				});
-				calculationSteps.push({
-					type: this._serviceCalculationEngine.symTypeEvaluate,
-					var: 'areaSpillHole',
-					evaluate: 'areaTemp * spillHolePct'
-				});
-			}
-			else if (data.spillHoleDiameter) {
-				calculationSteps.push({
-						type: this._serviceCalculationEngine.symTypeSet,
-						var: 'spillHoleDiameter',
-						value: data.spillHoleDiameter,
-						units: {
-							from: diameterLengthMeasurementUnit,
-							to: AppCommonConstants.MeasurementUnits.metrics.length.m
-						}
-				});
-				if (data.spillHoleShape === 'circle') {
-					calculationSteps.push(
-						{
-							type: this._serviceCalculationEngine.symTypeEvaluate,
-							var: 'areaSpillHole',
-							evaluate: '(pi * spillHoleDiameter^2) / 4'
-						}
-					);
-				}
-				else if (data.spillHoleShape === 'hexagon') {
-					calculationSteps.push(
-						{
-							type: this._serviceCalculationEngine.symTypeEvaluate,
-							var: 'areaSpillHole',
-							evaluate: '(sqrt(3)/2) * spillHoleDiameter'
-						}
-					);
-				}
-				else if (data.spillHoleShape === 'octagon') {
-					calculationSteps.push(
-						{
-							type: this._serviceCalculationEngine.symTypeEvaluate,
-							var: 'areaSpillHole',
-							evaluate: '2 * (sqrt(2) - 1) * spillHoleDiameter^2',
-						}
-					);
-				}
-				else
-					throw Error('No spill hole shape.');
-			}
-			else {
+		return this._successResponse({
+			steps: calculationSteps,
+			instance: this._serviceCalculationEngine.initialize(correlationId)
+		}, correlationId);
+	}
+
+	_initializeCalculationDiameter(correlationId, calculationSteps, data) {
+		calculationSteps.push({
+			type: this._serviceCalculationEngine.symTypeEvaluate,
+			var: 'denominator',
+			evaluate: 'airDensity * coeffDrag * desiredVelocity^2'
+		});
+		calculationSteps.push({
+			type: this._serviceCalculationEngine.symTypeEvaluate,
+			var: 'nominator',
+			evaluate: '(2 * mass * 9.8 m/s^2)'
+		});
+		calculationSteps.push({
+			type: this._serviceCalculationEngine.symTypeEvaluate,
+			var: 'areaTemp',
+			evaluate: 'nominator / denominator'
+		});
+
+		if (data.spillHolePct) {
+			calculationSteps.push({
+					type: this._serviceCalculationEngine.symTypeSet,
+					var: 'spillHolePct',
+					value: data.spillHolePct / 100
+			});
+			calculationSteps.push({
+				type: this._serviceCalculationEngine.symTypeEvaluate,
+				var: 'areaSpillHole',
+				evaluate: 'areaTemp * spillHolePct'
+			});
+		}
+		else if (data.spillHoleDiameter) {
+			calculationSteps.push({
+					type: this._serviceCalculationEngine.symTypeSet,
+					var: 'spillHoleDiameter',
+					value: data.spillHoleDiameter,
+					units: {
+						from: diameterLengthMeasurementUnit,
+						to: AppCommonConstants.MeasurementUnits.metrics.length.m
+					}
+			});
+			if (data.spillHoleShape === AppSharedConstants.Tools.ParachuteSizing.shapes.circle) {
 				calculationSteps.push(
 					{
 						type: this._serviceCalculationEngine.symTypeEvaluate,
 						var: 'areaSpillHole',
-						evaluate: 'areaTemp * 0',
+						evaluate: '(pi * spillHoleDiameter^2) / 4'
 					}
 				);
 			}
-	
-			calculationSteps.push({
-				type: this._serviceCalculationEngine.symTypeEvaluate,
-				var: 'area',
-				evaluate: 'areaTemp + areaSpillHole'
-			});
-	
-			if (data.parachuteShape === 'circle') {
+			else if (data.spillHoleShape === AppSharedConstants.Tools.ParachuteSizing.shapes.hexagon) {
 				calculationSteps.push(
 					{
 						type: this._serviceCalculationEngine.symTypeEvaluate,
-						var: 'diameterT',
-						evaluate: 'sqrt(4 * area / pi)'
-					}
-				);
-				calculationSteps.push(
-					{
-						type: this._serviceCalculationEngine.symTypeEvaluate,
-						var: 'diameterSpillHoleT',
-						evaluate: 'sqrt(4 * areaSpillHole / pi)'
+						var: 'areaSpillHole',
+						evaluate: '(sqrt(3)/2) * spillHoleDiameter'
 					}
 				);
 			}
-			else if (data.parachuteShape === 'hexagon') {
+			else if (data.spillHoleShape === AppSharedConstants.Tools.ParachuteSizing.shapes.octagon) {
 				calculationSteps.push(
 					{
 						type: this._serviceCalculationEngine.symTypeEvaluate,
-						var: 'diameterT',
-						evaluate: 'sqrt((2 * area) / sqrt(3))'
-					}
-				);
-				calculationSteps.push(
-					{
-						type: this._serviceCalculationEngine.symTypeEvaluate,
-						var: 'diameterSpillHoleT',
-						evaluate: 'sqrt((2 * areaSpillHole) / sqrt(3))'
-					}
-				);
-			}
-			else if (data.parachuteShape === 'octagon') {
-				calculationSteps.push(
-					{
-						type: this._serviceCalculationEngine.symTypeEvaluate,
-						var: 'diameterT',
-						evaluate: 'sqrt(area / (2 * (sqrt(2) - 1)))',
-					}
-				);
-				calculationSteps.push(
-					{
-						type: this._serviceCalculationEngine.symTypeEvaluate,
-						var: 'diameterSpillHoleT',
-						evaluate: 'sqrt(areaSpillHole / (2 * (sqrt(2) - 1)))',
+						var: 'areaSpillHole',
+						evaluate: '2 * (sqrt(2) - 1) * spillHoleDiameter^2',
 					}
 				);
 			}
 			else
-				throw Error('No parachute shape.');
+				throw Error(`Invalid spill hole shape '${data.spillHoleShape}'.`);
 		}
+		else {
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'areaSpillHole',
+					evaluate: 'areaTemp * 0',
+				}
+			);
+		}
+
+		calculationSteps.push({
+			type: this._serviceCalculationEngine.symTypeEvaluate,
+			var: 'area',
+			evaluate: 'areaTemp + areaSpillHole'
+		});
+
+		if (data.parachuteShape === AppSharedConstants.Tools.ParachuteSizing.shapes.circle) {
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'diameterT',
+					evaluate: 'sqrt(4 * area / pi)'
+				}
+			);
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'diameterSpillHoleT',
+					evaluate: 'sqrt(4 * areaSpillHole / pi)'
+				}
+			);
+		}
+		else if (data.parachuteShape === AppSharedConstants.Tools.ParachuteSizing.shapes.hexagon) {
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'diameterT',
+					evaluate: 'sqrt((2 * area) / sqrt(3))'
+				}
+			);
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'diameterSpillHoleT',
+					evaluate: 'sqrt((2 * areaSpillHole) / sqrt(3))'
+				}
+			);
+		}
+		else if (data.parachuteShape === AppSharedConstants.Tools.ParachuteSizing.shapes.octagon) {
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'diameterT',
+					evaluate: 'sqrt(area / (2 * (sqrt(2) - 1)))',
+				}
+			);
+			calculationSteps.push(
+				{
+					type: this._serviceCalculationEngine.symTypeEvaluate,
+					var: 'diameterSpillHoleT',
+					evaluate: 'sqrt(areaSpillHole / (2 * (sqrt(2) - 1)))',
+				}
+			);
+		}
+		else
+			throw Error(`Invalid parachute shape '${data.parachuteShape}'.`);
 		
 		calculationSteps.push(
 			{
@@ -248,7 +264,7 @@ class ParachuteSizingToolsService extends ToolsService {
 				evaluate: 'diameterT',
 				result: true,
 				format: this._serviceCalculationEngine.formatFixed(),
-				unit: diameterLengthMeasurementUnit
+				unit: data.diameterLengthMeasurementUnit
 			}
 		);
 		calculationSteps.push(
@@ -258,14 +274,12 @@ class ParachuteSizingToolsService extends ToolsService {
 				evaluate: 'diameterSpillHoleT',
 				result: true,
 				format: this._serviceCalculationEngine.formatFixed(),
-				unit: diameterLengthMeasurementUnit
+				unit: data.diameterLengthMeasurementUnit
 			}
 		);
+	}
 
-		return this._successResponse({
-			steps: calculationSteps,
-			instance: this._serviceCalculationEngine.initialize(correlationId)
-		}, correlationId);
+	_initializeCalculationVelocity(correlationId, calculationSteps, data) {
 	}
 }
 
