@@ -156,7 +156,7 @@ class ParachuteSizingToolsService extends ToolsService {
 					var: 'spillHoleDiameter',
 					value: data.spillHoleDiameter,
 					units: {
-						from: diameterLengthMeasurementUnit,
+						from: data.diameterLengthMeasurementUnit,
 						to: AppCommonConstants.MeasurementUnits.metrics.length.m
 					}
 			});
