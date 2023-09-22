@@ -148,7 +148,7 @@ class MathJsInstanceCalculationEngineToolService extends InstanceCalculationEngi
 			return false;
 
 		let value = calculationStep.value;
-		if (value) {
+		if (value !== null) {
 			if (calculationStep.unit) {
 				value = this._math.unit(`${value} ${calculationStep.unit}`);
 				this._parser.set(calculationStep.var, value);
