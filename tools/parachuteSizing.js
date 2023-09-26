@@ -63,6 +63,12 @@ class ParachuteSizingToolsService extends ToolsService {
 		if (this._hasFailed(response))
 			return response;
 		data.massWeightMeasurementUnit = massWeightMeasurementUnit;
+		data.diameterLengthMeasurementUnit = diameterLengthMeasurementUnit;
+		const spillHoleDiameterLengthMeasurementUnit = this._measurementUnitFromId(correlationId, data.spillHoleDiameterLengthMeasurementUnitsId, AppCommonConstants.MeasurementUnits.length.id, data.spillHoleDiameterLengthMeasurementUnitId);
+		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', spillHoleDiameterLengthMeasurementUnit, 'spillHoleDiameterLengthMeasurementUnit', correlationId);
+		if (this._hasFailed(response))
+			return response;
+		data.spillHoleDiameterLengthMeasurementUnit = spillHoleDiameterLengthMeasurementUnit;
 		const velocityMeasurementUnit = this._measurementUnitFromId(correlationId, data.desiredVelocityMeasurementUnitsId, AppCommonConstants.MeasurementUnits.velocity.id, data.desiredVelocityMeasurementUnitId);
 		response = this._enforceNotNullResponse('ParachuteSizingToolsService', 'initializeCalculation', velocityMeasurementUnit, 'velocityMeasurementUnit', correlationId);
 		if (this._hasFailed(response))
@@ -157,7 +163,7 @@ class ParachuteSizingToolsService extends ToolsService {
 					var: 'spillHoleDiameter',
 					value: data.spillHoleDiameter,
 					units: {
-						from: data.diameterLengthMeasurementUnit,
+						from: data.spillHoleDiameterLengthMeasurementUnit,
 						to: AppCommonConstants.MeasurementUnits.metrics.length.m
 					}
 			});
