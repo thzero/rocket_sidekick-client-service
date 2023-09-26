@@ -151,14 +151,22 @@ class MathJsInstanceCalculationEngineToolService extends InstanceCalculationEngi
 		if (value !== null) {
 			if (calculationStep.unit) {
 				value = this._math.unit(`${value} ${calculationStep.unit}`);
+				for (const listener of this._listeners)
+					this._publish(correlationId, listener, this._engine.symTypeSet, calculationStep.var, value, this._evaluationName);
 				this._parser.set(calculationStep.var, value);
 			}
 			else if (calculationStep.units && calculationStep.units.from && calculationStep.units.to) {
-				this._parser.set(calculationStep.var, this._math.unit(`${value} ${calculationStep.units.from}`));
+				let temp = this._math.unit(`${value} ${calculationStep.units.from}`);
+				for (const listener of this._listeners)
+					this._publish(correlationId, listener, this._engine.symTypeSet, calculationStep.var, temp, this._evaluationName);
+				this._parser.set(calculationStep.var, temp);
 				this._parser.evaluate(`${calculationStep.var} = ${calculationStep.var} to ${calculationStep.units.to}`);
 			}
-			else
+			else {
+				for (const listener of this._listeners)
+					this._publish(correlationId, listener, this._engine.symTypeSet, calculationStep.var, value, this._evaluationName);
 				this._parser.set(calculationStep.var, value);
+			}
 		}
 		else
 			this._parser.set(calculationStep.var, value);
