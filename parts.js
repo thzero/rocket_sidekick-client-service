@@ -8,14 +8,16 @@ class PartsService extends RestExternalService {
 	constructor() {
 		super();
 
-		this._servicStore = null;
+		this._serviceSecurity = null;
+		this._serviceStore = null;
 		this._serviceExternalMotorSearch = null;
 	}
 
 	async init(injector) {
 		await super.init(injector);
 
-		this._servicStore = this._injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_STORE);
+		this._serviceSecurity = this._injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_SECURITY);
+		this._serviceStore = this._injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_STORE);
 		this._serviceExternalMotorSearch = this._injector.getService(AppUtilityConstants.InjectorKeys.SERVICE_EXTERNAL_MOTOR_SEARCH);
 	}
 
@@ -128,6 +130,14 @@ class PartsService extends RestExternalService {
 		}
 	}
 
+	// async securityIsAdmin(correlationId) {
+	// 	const isLoggedIn = this._serviceStore.userAuthIsLoggedIn;
+	// 	if (!isLoggedIn)
+	// 		return false;
+	
+	// 	success = await this._serviceSecurity.authorizationCheckRoles(correlationId, this._serviceStore.user, roles, 'or');
+	// }
+
 	async _copyCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/copy' }, params);
 		this._logger.debug('PartsService', '_copyCommunication', 'response', response, correlationId);
@@ -148,7 +158,7 @@ class PartsService extends RestExternalService {
 
 	async _retrieveMotorCommunication(correlationId, id) {
 		let response = null;
-		const isLoggedIn = this._servicStore.userAuthIsLoggedIn;
+		const isLoggedIn = this._serviceStore.userAuthIsLoggedIn;
 		if (isLoggedIn)
 			response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'parts', id);
 		else
@@ -165,7 +175,7 @@ class PartsService extends RestExternalService {
 
 	async _searchMotorCommunication(correlationId, params) {
 		let response = null;
-		const isLoggedIn = this._servicStore.userAuthIsLoggedIn;
+		const isLoggedIn = this._serviceStore.userAuthIsLoggedIn;
 		if (isLoggedIn)
 			response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/search' }, params);
 		else
