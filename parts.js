@@ -130,14 +130,6 @@ class PartsService extends RestExternalService {
 		}
 	}
 
-	// async securityIsAdmin(correlationId) {
-	// 	const isLoggedIn = this._serviceStore.userAuthIsLoggedIn;
-	// 	if (!isLoggedIn)
-	// 		return false;
-	
-	// 	success = await this._serviceSecurity.authorizationCheckRoles(correlationId, this._serviceStore.user, roles, 'or');
-	// }
-
 	async _copyCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'parts/copy' }, params);
 		this._logger.debug('PartsService', '_copyCommunication', 'response', response, correlationId);
