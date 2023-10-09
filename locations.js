@@ -29,24 +29,10 @@ class LocationsService extends RestExternalService {
 		}
 	}
 
-	async retrieveGallery(correlationId, id) {
+	async save(correlationId, location) {
 		try {
-			this._enforceNotEmpty('LocationsService', 'retrieveGallery', id, 'id', correlationId);
-
-			const response = await this._retrieveGalleryCommunication(correlationId, id);
-			this._logger.debug('LocationsService', 'retrieveGallery', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('LocationsService', 'retrieveGallery', null, err, null, null, correlationId);
-		}
-	}
-
-	async save(correlationId, rocket) {
-		try {
-			this._enforceNotNull('LocationsService', 'save', rocket, 'rocket', correlationId);
-
-			const response = await this._saveCommunication(correlationId, rocket);
+			this._enforceNotNull('LocationsService', 'save', location, 'location', correlationId);
+			const response = await this._saveCommunication(correlationId, location);
 			this._logger.debug('LocationsService', 'save', 'response', response, correlationId);
 			return response;
 		}

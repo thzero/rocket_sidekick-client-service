@@ -1,5 +1,7 @@
 import LibraryClientConstants from '@thzero/library_client/constants.js';
 
+import LibraryCommonUtility from '@thzero/library_common/utility';
+
 import RestExternalService from '@thzero/library_client/service/externalRest';
 
 class LaunchesService extends RestExternalService {
@@ -29,24 +31,18 @@ class LaunchesService extends RestExternalService {
 		}
 	}
 
-	async retrieveGallery(correlationId, id) {
+	async save(correlationId, launch) {
 		try {
-			this._enforceNotEmpty('LaunchesService', 'retrieveGallery', id, 'id', correlationId);
+			this._enforceNotNull('LaunchesService', 'save', launch, 'launch', correlationId);
 
-			const response = await this._retrieveGalleryCommunication(correlationId, id);
-			this._logger.debug('LaunchesService', 'retrieveGallery', 'response', response, correlationId);
-			return response;
-		}
-		catch (err) {
-			return this._error('LaunchesService', 'retrieveGallery', null, err, null, null, correlationId);
-		}
-	}
+			launch.date = launch.date ? LibraryCommonUtility.convertTimestampFromLocal(launch.date) : null;
 
-	async save(correlationId, rocket) {
-		try {
-			this._enforceNotNull('LaunchesService', 'save', rocket, 'rocket', correlationId);
+			if (launch) {
+				delete launch.location;
+				delete launch.rocket;
+			}
 
-			const response = await this._saveCommunication(correlationId, rocket);
+			const response = await this._saveCommunication(correlationId, launch);
 			this._logger.debug('LaunchesService', 'save', 'response', response, correlationId);
 			return response;
 		}
