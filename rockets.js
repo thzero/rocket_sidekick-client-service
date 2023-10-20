@@ -219,10 +219,18 @@ class RocketsService extends RestExternalService {
 			else if (item.typeId === AppCommonConstants.Rocketry.PartTypes.chuteProtector) {
 			}
 			else if (item.typeId === AppCommonConstants.Rocketry.PartTypes.chuteRelease) {
+				temp.altitude = item.altitude;
+				temp.altitudeMeasurementUnitId = item.altitudeMeasurementUnitId;
+				temp.altitudeMeasurementUnitsId = item.altitudeMeasurementUnitsId;
 			}
 			else if (item.typeId === AppCommonConstants.Rocketry.PartTypes.deploymentBag) {
 			}
 			else if (item.typeId === AppCommonConstants.Rocketry.PartTypes.parachute) {
+				temp.reefed = item.reefed;
+				temp.reefedLength = item.reefedLength;
+				temp.reefedLengthMeasurementUnitId = item.reefedLengthMeasurementUnitId;
+				temp.reefedLengthMeasurementUnitsId = item.reefedLengthMeasurementUnitsId;
+
 			}
 			else if (item.typeId === AppCommonConstants.Rocketry.PartTypes.streamer) {
 			}
