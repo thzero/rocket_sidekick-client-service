@@ -148,7 +148,7 @@ class RocketsService extends RestExternalService {
 			const temp = LibraryCommonUtility.cloneDeep(rocket);
 			const stage = temp.stages.find(l => l.id === part.stageId);
 			if (!stage)
-				return error('store', 'saveStagePart', `Invalid stage for '${part.stageId}'.`, null, null, null, correlationId);
+				return error('RocketsService', 'saveStagePart', `Invalid stage for '${part.stageId}'.`, null, null, null, correlationId);
 
 			if (part.typeId === AppCommonConstants.Rocketry.PartTypes.altimeter)
 				stage.altimeters = LibraryCommonUtility.updateArrayByObject(stage.altimeters, part.item);
