@@ -99,6 +99,85 @@ class RocketSetupsService extends RestExternalService {
 		}
 	}
 
+	async saveStage(correlationId, rocketSetup, stage) {
+		try {
+			this._enforceNotNull('RocketSetupsService', 'saveStage', rocketSetup, 'rocketSetup', correlationId);
+			this._enforceNotNull('RocketSetupsService', 'saveStage', stage, 'stage', correlationId);
+
+			const temp = LibraryCommonUtility.cloneDeep(rocketSetup);
+			temp.stages = LibraryCommonUtility.updateArrayByObject(rocketSetup.stages, stage);
+
+			this.stageClean(correlationId, temp);
+
+			const response = await this._saveCommunication(correlationId, temp);
+			this._logger.debug('RocketSetupsService', 'saveStage', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketSetupsService', 'saveStage', null, err, null, null, correlationId);
+		}
+	}
+
+	async saveStageDelete(correlationId, rocketSetup, id) {
+		try {
+			this._enforceNotNull('RocketSetupsService', 'saveStageDelete', rocketSetup, 'rocketSetup', correlationId);
+			this._enforceNotEmpty('RocketSetupsService', 'saveStageDelete', id, 'id', correlationId);
+
+			const temp = LibraryCommonUtility.cloneDeep(rocketSetup);
+			LibraryCommonUtility.deleteArrayById(temp.stages, id);
+
+			temp.stages = temp.stages.sort((a, b) => a.index >= b.index);
+			let index = 0;
+			for (const item of temp.stages)
+				item.index = index++;
+
+			this.stageClean(correlationId, temp);
+
+			const response = await this._saveCommunication(correlationId, temp);
+			this._logger.debug('RocketSetupsService', 'saveStageDelete', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketSetupsService', 'saveStageDelete', null, err, null, null, correlationId);
+		}
+	}
+
+	async saveStagePart(correlationId, rocketSetup, part) {
+		try {
+			this._enforceNotNull('RocketSetupsService', 'saveStagePart', rocketSetup, 'rocketSetup', correlationId);
+			this._enforceNotNull('RocketSetupsService', 'saveStagePart', part, 'part', correlationId);
+
+			const temp = LibraryCommonUtility.cloneDeep(rocketSetup);
+			const stage = temp.stages.find(l => l.id === part.stageId);
+			if (!stage)
+				return error('RocketSetupsService', 'saveStagePart', `Invalid stage for '${part.stageId}'.`, null, null, null, correlationId);
+
+			if (part.typeId === AppCommonConstants.Rocketry.PartTypes.altimeter)
+				stage.altimeters = LibraryCommonUtility.updateArrayByObject(stage.altimeters, part.item);
+			else if (part.typeId === AppCommonConstants.Rocketry.PartTypes.chuteProtector)
+				stage.chuteProtectors = LibraryCommonUtility.updateArrayByObject(stage.chuteProtectors, part.item);
+			else if (part.typeId === AppCommonConstants.Rocketry.PartTypes.chuteRelease)
+				stage.chuteReleases = LibraryCommonUtility.updateArrayByObject(stage.chuteReleases, part.item);
+			else if (part.typeId === AppCommonConstants.Rocketry.PartTypes.deploymentBag)
+				stage.deploymentBags = LibraryCommonUtility.updateArrayByObject(stage.deploymentBags, part.item);
+			else if (part.typeId === AppCommonConstants.Rocketry.PartTypes.parachute)
+				stage.parachutes = LibraryCommonUtility.updateArrayByObject(stage.parachutes, part.item);
+			else if (part.typeId === AppCommonConstants.Rocketry.PartTypes.streamer)
+				stage.streamers = LibraryCommonUtility.updateArrayByObject(stage.streamers, part.item);
+			else if (part.typeId === AppCommonConstants.Rocketry.PartTypes.tracker)
+				stage.trackers = LibraryCommonUtility.updateArrayByObject(stage.trackers, part.item);
+
+			this.stageClean(correlationId, temp);
+
+			const response = await this._saveCommunication(correlationId, temp);
+			this._logger.debug('RocketSetupsService', 'saveStagePart', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketsSeRocketSetupsServicervice', 'saveStagePart', null, err, null, null, correlationId);
+		}
+	}
+
 	async search(correlationId, params) {
 		try {
 			const response = await this._searchCommunication(correlationId, params);
