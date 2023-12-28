@@ -25,8 +25,8 @@ class AppSecurityService extends SecurityService {
 	}
 
 	async securityAdmin(correlationId, roles) {
-		this._enforceNotNull('PartsService', '_securityAdmin', roles, 'roles', correlationId);
-		this._enforce('PartsService', '_securityAdmin', Array.isArray(roles), 'roles.isArray', correlationId);
+		this._enforceNotNull('AppSecurityService', 'securityAdmin', roles, 'roles', correlationId);
+		this._enforce('AppSecurityService', 'securityAdmin', Array.isArray(roles), 'roles.isArray', correlationId);
 
 		const isLoggedIn = this._serviceStore.userAuthIsLoggedIn;
 		if (!isLoggedIn)
