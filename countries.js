@@ -32,7 +32,7 @@ class CountriesService extends RestExternalService {
 
 	async _listingCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'countries/listing' }, params);
-		this._logger.debug('ManufacturersService', '_listingCommunication', 'response', response, correlationId);
+		this._logger.debug('CountriesService', '_listingCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
