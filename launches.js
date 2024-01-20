@@ -1,6 +1,6 @@
 import LibraryClientConstants from '@thzero/library_client/constants.js';
 
-import LibraryCommonUtility from '@thzero/library_common/utility';
+import LibraryMomentUtility from '@thzero/library_common/utility/moment';
 
 import RestExternalService from '@thzero/library_client/service/externalRest';
 
@@ -35,7 +35,7 @@ class LaunchesService extends RestExternalService {
 		try {
 			this._enforceNotNull('LaunchesService', 'save', launch, 'launch', correlationId);
 
-			launch.date = launch.date ? LibraryCommonUtility.convertTimestampFromLocal(launch.date) : null;
+			launch.date = launch.date ? LibraryMomentUtility.convertTimestampFromLocal(launch.date) : null;
 
 			if (launch) {
 				delete launch.location;
