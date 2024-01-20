@@ -2,7 +2,7 @@ import LibraryClientConstants from '@thzero/library_client/constants';
 
 import NotImplementedError from '@thzero/library_common/errors/notImplemented';
 
-import LibraryCommonUtility from '@thzero/library_common/utility/index';
+import LibraryMomentUtility from '@thzero/library_common/utility/moment';
 
 import BaseService from '@thzero/library_client/service/index';
 
@@ -27,8 +27,8 @@ class MotorSearchExternalService extends BaseService {
 
 	async manufacturers(correlationId, cached) {
 		try {
-			const now = LibraryCommonUtility.getTimestamp();
-			let ttl = LibraryCommonUtility.getTimestamp() + this._ttlDefault;
+			const now = LibraryMomentUtility.getTimestamp();
+			let ttl = LibraryMomentUtility.getTimestamp() + this._ttlDefault;
 			if (cached) {
 				if (!cached.ttl)
 					cached.ttl = ttl;
@@ -82,7 +82,7 @@ class MotorSearchExternalService extends BaseService {
 				}
 			}
 
-			cache.last = LibraryCommonUtility.getTimestamp();
+			cache.last = LibraryMomentUtility.getTimestamp();
 
 			return this._successResponse({
 				motor: motor,
@@ -96,8 +96,8 @@ class MotorSearchExternalService extends BaseService {
 
 	async search(correlationId, criteria, cached) {
 		try {
-			const now = LibraryCommonUtility.getTimestamp();
-			const ttl = LibraryCommonUtility.getTimestamp() + this._ttlDefault;
+			const now = LibraryMomentUtility.getTimestamp();
+			const ttl = LibraryMomentUtility.getTimestamp() + this._ttlDefault;
 
 			if (!String.isNullOrEmpty(criteria.motorDiameter)) {
 				criteria.diameter = criteria.motorDiameter;
