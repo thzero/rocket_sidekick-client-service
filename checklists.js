@@ -1,5 +1,7 @@
 import LibraryClientConstants from '@thzero/library_client/constants.js';
 
+import LibraryCommonUtility from '@thzero/library_common/utility/index';
+
 import RestExternalService from '@thzero/library_client/service/externalRest';
 
 class ChecklistsService extends RestExternalService {
@@ -38,7 +40,11 @@ class ChecklistsService extends RestExternalService {
 
 	async save(correlationId, checklist) {
 		try {
-			const response = await this._saveCommunication(correlationId, checklist);
+			const temp = LibraryCommonUtility.cloneDeep(checklist);
+			delete temp.location;
+			delete temp.rocketSetup;
+
+			const response = await this._saveCommunication(correlationId, temp);
 			this._logger.debug('ChecklistsService', 'save', 'response', response, correlationId);
 			return response;
 		}
