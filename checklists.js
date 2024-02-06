@@ -64,6 +64,17 @@ class ChecklistsService extends RestExternalService {
 		}
 	}
 
+	async start(correlationId, params) {
+		try {
+			const response = await this._startCommunication(correlationId, params);
+			this._logger.debug('ChecklistsService', 'start', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('ChecklistsService', 'start', null, err, null, null, correlationId);
+		}
+	}
+
 	async _copyCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/copy' }, params);
 		this._logger.debug('ChecklistsService', '_copyCommunication', 'response', response, correlationId);
@@ -91,6 +102,12 @@ class ChecklistsService extends RestExternalService {
 	async _searchCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/search' }, params);
 		this._logger.debug('ChecklistsService', '_searchCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _startCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'checklists/start' }, params);
+		this._logger.debug('ChecklistsService', '_startCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
