@@ -1,3 +1,4 @@
+import AppCommonConstants from 'rocket_sidekick_common/constants.js';
 import LibraryClientConstants from '@thzero/library_client/constants.js';
 
 import LibraryCommonUtility from '@thzero/library_common/utility/index';
@@ -41,6 +42,7 @@ class ChecklistsService extends RestExternalService {
 	async save(correlationId, checklist) {
 		try {
 			const temp = LibraryCommonUtility.cloneDeep(checklist);
+			delete temp.canLaunch;
 			delete temp.location;
 			delete temp.rocketSetup;
 
