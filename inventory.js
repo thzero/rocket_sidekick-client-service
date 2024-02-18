@@ -1,6 +1,6 @@
 import LibraryClientConstants from '@thzero/library_client/constants.js';
 
-import LibraryMomentUtility from '@thzero/library_common/utility/moment';
+import LibraryCommonUtility from '@thzero/library_common/utility/index';
 
 import RestExternalService from '@thzero/library_client/service/externalRest';
 
@@ -16,18 +16,24 @@ class InventoryService extends RestExternalService {
 		}
 	}
 
-	async save(correlationId, launch) {
+	async save(correlationId, inventory) {
 		try {
-			this._enforceNotNull('InventoryService', 'save', launch, 'launch', correlationId);
+			this._enforceNotNull('InventoryService', 'save', inventory, 'inventory', correlationId);
 
-			launch.date = launch.date ? LibraryMomentUtility.convertTimestampFromLocal(launch.date) : null;
+			inventory = LibraryCommonUtility.cloneDeep(inventory);
 
-			if (launch) {
-				delete launch.location;
-				delete launch.rocket;
+			delete inventory.name;
+			delete inventory.description;
+			delete inventory.searchName;
+			delete inventory.items;
+			delete inventory.manufacturers;
+			for (const type of inventory.types) {
+				delete type.title;
+				for (const item of type.items)
+					delete item.item;
 			}
 
-			const response = await this._saveCommunication(correlationId, launch);
+			const response = await this._saveCommunication(correlationId, inventory);
 			this._logger.debug('InventoryService', 'save', 'response', response, correlationId);
 			return response;
 		}
