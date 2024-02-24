@@ -29,8 +29,11 @@ class InventoryService extends RestExternalService {
 			delete inventory.manufacturers;
 			for (const type of inventory.types) {
 				delete type.title;
-				for (const item of type.items)
+				for (const item of type.items) {
+					item.delay = item.delay ? Number(item.delay) : null;
+					item.quantity = item.quantity ? Number(item.quantity) : null;
 					delete item.item;
+				}
 			}
 
 			const response = await this._saveCommunication(correlationId, inventory);
