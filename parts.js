@@ -8,17 +8,17 @@ class PartsService extends RestExternalService {
 	constructor() {
 		super();
 
+		this._serviceMotors = null;
 		this._serviceSecurity = null;
 		this._serviceStore = null;
-		this._serviceExternalMotorSearch = null;
 	}
 
 	async init(injector) {
 		await super.init(injector);
 
+		this._serviceMotors = this._injector.getService(AppUtilityConstants.InjectorKeys.SERVICE_MOTORS);
 		this._serviceSecurity = this._injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_SECURITY);
 		this._serviceStore = this._injector.getService(LibraryClientConstants.InjectorKeys.SERVICE_STORE);
-		this._serviceExternalMotorSearch = this._injector.getService(AppUtilityConstants.InjectorKeys.SERVICE_EXTERNAL_MOTOR_SEARCH);
 	}
 
 	async copy(correlationId, params) {
@@ -84,7 +84,7 @@ class PartsService extends RestExternalService {
 			if (params.typeId === AppCommonConstants.Rocketry.PartTypes.motor) {
 				// console.log('parts.search.response');
 				// console.dir(response);
-				return this._serviceExternalMotorSearch.search();
+				return this._serviceMotors.search();
 			}
 			
 			// TODO: potentially look at caching; look at expanding the motorsearch caching schema at a parts type level.

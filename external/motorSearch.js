@@ -234,16 +234,20 @@ class MotorSearchExternalService extends BaseService {
 				continue;
 			}
 
-			if (String.isNullOrEmpty(criteria.impulseClass)) {
-				// console.log('MotorSearchExternalService._searchFilter.no impulseclass');
-				// console.dir(criteria);
-				continue;
-			}
+			// if (String.isNullOrEmpty(criteria.impulseClass)) {
+			// 	// console.log('MotorSearchExternalService._searchFilter.no impulseclass');
+			// 	// console.dir(criteria);
+			// 	continue;
+			// }
 
 			// console.log('MotorSearchExternalService._searchFilter.impulseClass');
 			// console.dir(criteria.impulseClass.toLowerCase());
 			// console.dir(item.impulseClass.toLowerCase());
-			if (item.impulseClass.toLowerCase() !== criteria.impulseClass.toLowerCase()) {
+			// if (item.impulseClass.toLowerCase() !== criteria.impulseClass.toLowerCase()) {
+			// 	// console.log('MotorSearchExternalService._searchFilter.fail');
+			// 	continue;
+			// }
+			if (!criteria.impulseClass || criteria.impulseClass.indexOf(item.impulseClass.toUpperCase()) === -1) {
 				// console.log('MotorSearchExternalService._searchFilter.fail');
 				continue;
 			}
