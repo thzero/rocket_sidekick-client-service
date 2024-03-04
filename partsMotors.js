@@ -1,8 +1,8 @@
 import AppSharedConstants from '@/utility/constants';
 
-import MotorSearchExternalService from '@/service/external/motorSearch';
+import MotorsService from '@/service/motors';
 
-class PartsMotorSearchExternalService extends MotorSearchExternalService {
+class PartsMotorsService extends MotorsService {
 	constructor() {
 		super();
 
@@ -21,7 +21,7 @@ class PartsMotorSearchExternalService extends MotorSearchExternalService {
 
 	async _motor(correlationId, motorId) {
 		const response = await this._serviceParts.retrieveMotor(correlationId, motorId);
-		this._logger.debug('PartsMotorSearchExternalService', '_motor', 'response', response, correlationId);
+		this._logger.debug('PartsMotorsService', '_motor', 'response', response, correlationId);
 		return response;
 	}
 
@@ -46,21 +46,21 @@ class PartsMotorSearchExternalService extends MotorSearchExternalService {
 
 			// Either from criteria or from motor need the impulse class...
 			if (String.isNullOrEmpty(params.impulseClass))
-				//return this._error('PartsMotorSearchExternalService', 'search', 'Invalid criteira', null, null, null, correlationId);
+				//return this._error('PartsMotorsService', 'search', 'Invalid criteira', null, null, null, correlationId);
 				return this._successResponse([], correlationId);
 
 			params.motorSearch = true;
 
 			// Search to get all the motors for this impulse class; then filtering will be applied upstream...
 			const response = await this._serviceParts.searchMotors(correlationId, params);
-			this._logger.debug('PartsMotorSearchExternalService', '_search', 'response', response, correlationId);
+			this._logger.debug('PartsMotorsService', '_search', 'response', response, correlationId);
 			if (response && response.results && response.results.data && (response.results.data.length > 0))
 				return this._successResponse(response.results.data, correlationId);
 
 			return this._successResponse([], correlationId);
 		}
 		catch (err) {
-			this._logger.exception('PartsMotorSearchExternalService', 'search', err, correlationId);
+			this._logger.exception('PartsMotorsService', 'search', err, correlationId);
 			return this._hasFailed(correlationId);
 		}
 	}
@@ -70,4 +70,4 @@ class PartsMotorSearchExternalService extends MotorSearchExternalService {
 	}
 }
 
-export default PartsMotorSearchExternalService;
+export default PartsMotorsService;

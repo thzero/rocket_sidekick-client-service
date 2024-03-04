@@ -6,7 +6,7 @@ import LibraryMomentUtility from '@thzero/library_common/utility/moment';
 
 import BaseService from '@thzero/library_client/service/index';
 
-class MotorSearchExternalService extends BaseService {
+class MotorsService extends BaseService {
 	constructor() {
 		super();
 
@@ -39,7 +39,7 @@ class MotorSearchExternalService extends BaseService {
 				return this._successResponse(cached, correlationId);
 
 			const response = await this._manufacturers(correlationId);
-			this._logger.debug('MotorSearchExternalService', 'manufacturers', 'response', response, correlationId);
+			this._logger.debug('MotorsService', 'manufacturers', 'response', response, correlationId);
 
 			return this._successResponse({
 				manufacturers: response.results,
@@ -48,7 +48,7 @@ class MotorSearchExternalService extends BaseService {
 			}, correlationId);
 		}
 		catch (err) {
-			return this._error('MotorSearchExternalService', 'manufacturers', null, err, null, null, correlationId);
+			return this._error('MotorsService', 'manufacturers', null, err, null, null, correlationId);
 		}
 	}
 
@@ -64,11 +64,11 @@ class MotorSearchExternalService extends BaseService {
 			}
 
 			if (!motor)
-				return this._error('MotorSearchExternalService', 'motor', 'Invalid motor', null, null, null, correlationId);
+				return this._error('MotorsService', 'motor', 'Invalid motor', null, null, null, correlationId);
 
 			if (!motor.samples || motor.samples.length === 0) {
 				const response = await this._motor(correlationId, motorId);
-				this._logger.debug('MotorSearchExternalService', 'motor', 'response', response, correlationId);
+				this._logger.debug('MotorsService', 'motor', 'response', response, correlationId);
 				if (this._hasFailed(response))
 					return response;
 
@@ -90,7 +90,7 @@ class MotorSearchExternalService extends BaseService {
 			}, correlationId);
 		}
 		catch (err) {
-			return this._error('MotorSearchExternalService', 'motor', null, err, null, correlationId);
+			return this._error('MotorsService', 'motor', null, err, null, correlationId);
 		}
 	}
 
@@ -109,11 +109,11 @@ class MotorSearchExternalService extends BaseService {
 			}
 			criteria.impulseClass = criteria.impulseClass ?? null;
 
-			// console.log('MotorSearchExternalService.search.cached');
+			// console.log('MotorsService.search.cached');
 			// console.dir(cached);
 			if (cached && (cached.ttl !== null && cached.ttl > now) && (cached.data && cached.data.length > 0)) {
 				const responseFilter = this._searchFilter(correlationId, criteria, cached.data);
-				// console.log('MotorSearchExternalService.search.responseFilter');
+				// console.log('MotorsService.search.responseFilter');
 				// console.dir(responseFilter);
 				// If there total for this impulse class is greater than zero, use the cached results....
 				if (responseFilter.results.total > 0) {
@@ -136,28 +136,28 @@ class MotorSearchExternalService extends BaseService {
 			let data = [ ...cached.data ];
 
 			const response = await this._search(correlationId, criteria);
-			// console.log('MotorSearchExternalService.search.response');
+			// console.log('MotorsService.search.response');
 			// console.dir(response);
-			this._logger.debug('MotorSearchExternalService', 'search', 'response', response, correlationId);
+			this._logger.debug('MotorsService', 'search', 'response', response, correlationId);
 			if (this._hasFailed(response)) {
-				// console.log('MotorSearchExternalService.search failed');
+				// console.log('MotorsService.search failed');
 				return response;
 			}
 
 			// If succeeded, then update data set.
 			if (this._hasSucceeded(response)) {
 				const responseUpdate = this._searchUpdateCache(correlationId, response.results, data, cached.data);
-				// console.log('MotorSearchExternalService.search.responseUpdate');
+				// console.log('MotorsService.search.responseUpdate');
 				// console.dir(responseUpdate);
 				if (this._successResponse(responseUpdate))
 					data = response.results;
 			}
 
-			// console.log('MotorSearchExternalService.search.data');
+			// console.log('MotorsService.search.data');
 			// console.dir(data);
 			// Filter the data set for results...
 			const responseFilter = this._searchFilter(correlationId, criteria, data);
-			// console.log('MotorSearchExternalService.search.responseFilter');
+			// console.log('MotorsService.search.responseFilter');
 			// console.dir(responseFilter);
 			return this._successResponse({
 				filtered: this._hasSucceeded(responseFilter) ? responseFilter.results.output : [],
@@ -169,7 +169,7 @@ class MotorSearchExternalService extends BaseService {
 			}, correlationId);
 		}
 		catch (err) {
-			return this._error('MotorSearchExternalService', 'search', null, err, null, correlationId);
+			return this._error('MotorsService', 'search', null, err, null, correlationId);
 		}
 	}
 
@@ -203,19 +203,19 @@ class MotorSearchExternalService extends BaseService {
 		let total = 0;
 		const output = [];
 
-		// console.log('MotorSearchExternalService._searchFilter.criteria');
+		// console.log('MotorsService._searchFilter.criteria');
 		// console.dir(criteria);
 
 		if (!data || !Array.isArray(data)) {
-			// console.log('MotorSearchExternalService._searchFilter.no data');
+			// console.log('MotorsService._searchFilter.no data');
 			return this._successResponse({ output: [], total: 0 }, correlationId);
 		}
 
 		for (const item of data) {
-			// console.log('MotorSearchExternalService._searchFilter.id');
+			// console.log('MotorsService._searchFilter.id');
 			// console.dir(item.id);
 
-			// console.log('MotorSearchExternalService._searchFilter.impulseClass');
+			// console.log('MotorsService._searchFilter.impulseClass');
 			// console.dir(criteria.motor);
 			if (!String.isNullOrEmpty(criteria.motor)) {
 				// console.dir(item.commonName);
@@ -223,93 +223,93 @@ class MotorSearchExternalService extends BaseService {
 				if (String.isNullOrEmpty(item.commonName) || item.commonName.toLowerCase().indexOf(criteria.motor.toLowerCase()) < 0) {
 					// console.dir(item.designation);
 					if (String.isNullOrEmpty(item.designation) || item.designation.toLowerCase().indexOf(criteria.motor.toLowerCase()) < 0) {
-						// console.log('MotorSearchExternalService._searchFilter.fail');
+						// console.log('MotorsService._searchFilter.fail');
 						continue;
 					}
 				}
 
 				total++;
-				// console.log('MotorSearchExternalService._searchFilter.id.add.motor');
+				// console.log('MotorsService._searchFilter.id.add.motor');
 				output.push(item);
 				continue;
 			}
 
 			// if (String.isNullOrEmpty(criteria.impulseClass)) {
-			// 	// console.log('MotorSearchExternalService._searchFilter.no impulseclass');
+			// 	// console.log('MotorsService._searchFilter.no impulseclass');
 			// 	// console.dir(criteria);
 			// 	continue;
 			// }
 
-			// console.log('MotorSearchExternalService._searchFilter.impulseClass');
+			// console.log('MotorsService._searchFilter.impulseClass');
 			// console.dir(criteria.impulseClass.toLowerCase());
 			// console.dir(item.impulseClass.toLowerCase());
 			// if (item.impulseClass.toLowerCase() !== criteria.impulseClass.toLowerCase()) {
-			// 	// console.log('MotorSearchExternalService._searchFilter.fail');
+			// 	// console.log('MotorsService._searchFilter.fail');
 			// 	continue;
 			// }
 			if (!criteria.impulseClass || criteria.impulseClass.indexOf(item.impulseClass.toUpperCase()) === -1) {
-				// console.log('MotorSearchExternalService._searchFilter.fail');
+				// console.log('MotorsService._searchFilter.fail');
 				continue;
 			}
 
 			total++;
 
-			// console.log('MotorSearchExternalService._searchFilter.diameter');
+			// console.log('MotorsService._searchFilter.diameter');
 			// console.dir(criteria.diameter);
 			if (criteria.diameter) {
 				// console.dir(item.diameter);
 				if (item.diameter !== parseInt(criteria.diameter)) {
-					// console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorsService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			// console.log('MotorSearchExternalService._searchFilter.sparky');
+			// console.log('MotorsService._searchFilter.sparky');
 			// console.dir(criteria.sparky);
 			if (criteria.sparky !== null && criteria.sparky) {
 				// console.dir(item.sparky);
 				if (item.sparky === null || (item.sparky !== null && item.sparky === false)) {
-					// console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorsService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			// console.log('MotorSearchExternalService._searchFilter.singleUse');
+			// console.log('MotorsService._searchFilter.singleUse');
 			// console.dir(criteria.singleUse);
 			if (criteria.singleUse !== null && criteria.singleUse) {
 				// console.dir(item.type);
 				if (item.type !== 'SU') {
-					// console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorsService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			// console.log('MotorSearchExternalService._searchFilter.manufacturer');
+			// console.log('MotorsService._searchFilter.manufacturer');
 			// console.dir(criteria.manufacturer);
 			if (Array.isArray(criteria.manufacturers) && criteria.manufacturers.length > 0) {
 				// console.dir(item.manufacturerId);
 				if (!criteria.manufacturers.includes(item.manufacturerId)) {
-					// console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorsService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			// console.log('MotorSearchExternalService._searchFilter.manufacturerStockId');
+			// console.log('MotorsService._searchFilter.manufacturerStockId');
 			// console.dir(criteria.manufacturerStockId);
 			if (!String.isNullOrEmpty(criteria.manufacturerStockId)) {
 				// console.dir(item.manufacturerStockId);
 				if (item.manufacturerStockId.toLowerCase().equals((criteria.manufacturerStockId ?? '').toLowerCase())) {
-					// console.log('MotorSearchExternalService._searchFilter.fail');
+					// console.log('MotorsService._searchFilter.fail');
 					continue;
 				}
 			}
 
-			// console.log('MotorSearchExternalService._searchFilter.id.add');
+			// console.log('MotorsService._searchFilter.id.add');
 			// console.dir(item.id);
 			output.push(item);
 		}
 
-		// console.log('MotorSearchExternalService._searchFilter.output');
+		// console.log('MotorsService._searchFilter.output');
 		// console.dir(output);
 		total = output.length;
 		return this._successResponse({ output: output, total: total }, correlationId);
@@ -352,4 +352,4 @@ class MotorSearchExternalService extends BaseService {
 	}
 }
 
-export default MotorSearchExternalService;
+export default MotorsService;

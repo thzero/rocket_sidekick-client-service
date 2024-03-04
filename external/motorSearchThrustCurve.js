@@ -1,6 +1,6 @@
 import AppSharedConstants from '@/utility/constants';
 
-import MotorSearchExternalService from '@/service/external/motorSearch';
+import MotorSearchExternalService from '@/service/motors';
 
 class ThrustCurveMotorSearchExternalService extends MotorSearchExternalService {
 	nameLocale() {
