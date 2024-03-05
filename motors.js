@@ -109,6 +109,10 @@ class MotorsService extends BaseService {
 			}
 			criteria.impulseClass = criteria.impulseClass ?? null;
 
+			/*
+			// TODO: This was put in place to reduce the usage of an external API and not overload it, setc.
+			// Since we are syncing behind the scenes, its not necessary to leverage the API directly.
+			// However, it would still be good idea to try and leverage client side caching.
 			// console.log('MotorsService.search.cached');
 			// console.dir(cached);
 			if (cached && (cached.ttl !== null && cached.ttl > now) && (cached.data && cached.data.length > 0)) {
@@ -129,6 +133,7 @@ class MotorsService extends BaseService {
 
 				// Otherwise need to go get and cache the data from external...
 			}
+			*/
 
 			cached = cached || {};
 			cached.data = cached.data || [];
