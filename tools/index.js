@@ -5,7 +5,6 @@ import BaseService from '@thzero/library_client/service/index';
 class ToolsService extends BaseService {
 	_checkField(correlationId, input, error, errors) {
 		if (input === -1) {
-			valid = false;
 			errors.push(error);
 			return false;
 		}
