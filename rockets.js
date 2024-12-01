@@ -176,6 +176,45 @@ class RocketsService extends RestExternalService {
 		}
 	}
 
+	async saveVideo(correlationId, rocket, video) {
+		try {
+			this._enforceNotNull('RocketsService', 'saveVideo', rocket, 'rocket', correlationId);
+			this._enforceNotNull('RocketsService', 'saveVideo', video, 'video', correlationId);
+
+			const temp = LibraryCommonUtility.cloneDeep(rocket);
+			temp.videos = temp.videos ?? [];
+			temp.videos = LibraryCommonUtility.updateArrayByObject(rocket.videos, video);
+
+			this.stageClean(correlationId, temp);
+
+			const response = await this._saveCommunication(correlationId, temp);
+			this._logger.debug('RocketsService', 'saveVideo', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketsService', 'saveVideo', null, err, null, null, correlationId);
+		}
+	}
+
+	async saveVideoDelete(correlationId, rocket, id) {
+		try {
+			this._enforceNotNull('RocketsService', 'saveVideoDelete', rocket, 'rocket', correlationId);
+			this._enforceNotEmpty('RocketsService', 'saveVideoDelete', id, 'id', correlationId);
+
+			const temp = LibraryCommonUtility.cloneDeep(rocket);
+			LibraryCommonUtility.deleteArrayById(temp.videos, id);
+			
+			this.stageClean(correlationId, temp);
+
+			const response = await this._saveCommunication(correlationId, temp);
+			this._logger.debug('RocketsService', 'saveVideoDelete', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('RocketsService', 'saveVideoDelete', null, err, null, null, correlationId);
+		}
+	}
+
 	async search(correlationId, params) {
 		try {
 			const response = await this._searchCommunication(correlationId, params);
