@@ -40,6 +40,7 @@ class LaunchesService extends RestExternalService {
 			if (launch) {
 				delete launch.location;
 				delete launch.rocket;
+				delete launch.rocketSetup;
 			}
 
 			const response = await this._saveCommunication(correlationId, launch);
