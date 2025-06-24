@@ -28,7 +28,7 @@ class MotorsService extends BaseService {
 	async manufacturers(correlationId, cached) {
 		try {
 			const now = LibraryMomentUtility.getTimestamp();
-			let ttl = LibraryMomentUtility.getTimestamp() + this._ttlDefault;
+			let ttl = now + this._ttlDefault;
 			if (cached) {
 				if (!cached.ttl)
 					cached.ttl = ttl;
