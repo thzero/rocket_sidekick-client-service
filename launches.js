@@ -63,6 +63,17 @@ class LaunchesService extends RestExternalService {
 		}
 	}
 
+	async searchGallery(correlationId, params) {
+		try {
+			const response = await this._searchGalleryCommunication(correlationId, params);
+			this._logger.debug('LaunchesService', 'searchGallery', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('LaunchesService', 'searchGallery', null, err, null, null, correlationId);
+		}
+	}
+
 	async _deleteCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.deleteById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'launches', id);
 		this._logger.debug('LaunchesService', '_deleteCommunication', 'response', response, correlationId);
@@ -84,6 +95,12 @@ class LaunchesService extends RestExternalService {
 	async _searchCommunication(correlationId, params) {
 		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'launches/search' }, params);
 		this._logger.debug('LaunchesService', '_searchCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _searchGalleryCommunication(correlationId, params) {
+		const response = await this._serviceCommunicationRest.post(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, { url: 'launches/search/gallery' }, params);
+		this._logger.debug('LaunchesService', '_searchGalleryCommunication', 'response', response, correlationId);
 		return response;
 	}
 }
