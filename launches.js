@@ -31,6 +31,19 @@ class LaunchesService extends RestExternalService {
 		}
 	}
 
+	async retrieveGallery(correlationId, id) {
+		try {
+			this._enforceNotEmpty('LaunchesService', 'retrieveGallery', id, 'id', correlationId);
+
+			const response = await this._retrieveGalleryCommunication(correlationId, id);
+			this._logger.debug('LaunchesService', 'retrieveGallery', 'response', response, correlationId);
+			return response;
+		}
+		catch (err) {
+			return this._error('LaunchesService', 'retrieveGallery', null, err, null, null, correlationId);
+		}
+	}
+
 	async save(correlationId, launch) {
 		try {
 			this._enforceNotNull('LaunchesService', 'save', launch, 'launch', correlationId);
@@ -83,6 +96,12 @@ class LaunchesService extends RestExternalService {
 	async _retrieveCommunication(correlationId, id) {
 		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'launches', id);
 		this._logger.debug('LaunchesService', '_retrieveCommunication', 'response', response, correlationId);
+		return response;
+	}
+
+	async _retrieveGalleryCommunication(correlationId, id) {
+		const response = await this._serviceCommunicationRest.getById(correlationId, LibraryClientConstants.ExternalKeys.BACKEND, 'launches/gallery', id);
+		this._logger.debug('LaunchesService', '_retrieveGalleryCommunication', 'response', response, correlationId);
 		return response;
 	}
 
