@@ -25,6 +25,7 @@ class InventoryService extends RestExternalService {
 			delete inventory.name;
 			delete inventory.description;
 			delete inventory.searchName;
+			delete inventory.sortName;
 			delete inventory.items;
 			delete inventory.manufacturers;
 			for (const type of inventory.types) {

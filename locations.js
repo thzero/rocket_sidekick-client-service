@@ -32,6 +32,12 @@ class LocationsService extends RestExternalService {
 	async save(correlationId, location) {
 		try {
 			this._enforceNotNull('LocationsService', 'save', location, 'location', correlationId);
+
+			if (location) {
+				delete location.searchName;
+				delete location.sortName;
+			};
+
 			const response = await this._saveCommunication(correlationId, location);
 			this._logger.debug('LocationsService', 'save', 'response', response, correlationId);
 			return response;
