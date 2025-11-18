@@ -305,6 +305,7 @@ class RocketsService extends RestExternalService {
 
 			if (stage.motors) {
 				for (let motor of stage.motors) {
+					delete motor.id;
 					delete motor.motorCaseInfo;
 					delete motor.motorCaseName;
 					delete motor.motorCaseManufacturerId;
