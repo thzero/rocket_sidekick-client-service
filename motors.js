@@ -178,8 +178,8 @@ class MotorsService extends BaseService {
 		}
 	}
 
-	urlHuman() {
-		const config = this._config.getBackend(this._urlKey());
+	urlHuman(correlationId) {
+		const config = this._config.getBackend(correlationId, this._urlKey());
 		return config.humanUrl;
 	}
 
